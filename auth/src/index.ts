@@ -14,5 +14,5 @@ app.use(signupRouter)
 app.use(signoutRouter)
 
 app.listen(3000, () => {
-    console.log('Auth service listening on port 3000')
+    console.log('Auth service listening on port 3000...')
 })
