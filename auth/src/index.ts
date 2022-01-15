@@ -8,7 +8,7 @@ import { signoutRouter } from './routes/signout';
 const app = express()
 
 app.use(json())
-
+app.get('/', (req, res) => { res.send('Hello World') })
 app.use(signinRouter)
 app.use(signupRouter)
 app.use(signoutRouter)
