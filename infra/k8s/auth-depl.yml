@@ -17,6 +17,7 @@ spec:
           image: justinnicky/auth
 ---
 apiVersion: v1
+
 kind: Service
 metadata:
   name: auth-srv
