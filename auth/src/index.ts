@@ -8,11 +8,11 @@ import { signoutRouter } from './routes/signout';
 const app = express()
 
 app.use(json())
-
+app.get('/', (req, res) => { res.send('Hello World') })
 app.use(signinRouter)
 app.use(signupRouter)
 app.use(signoutRouter)
 
 app.listen(3000, () => {
-    console.log('Auth service listening on port 3000')
+    console.log('Auth service listening on port 3000...')
 })
