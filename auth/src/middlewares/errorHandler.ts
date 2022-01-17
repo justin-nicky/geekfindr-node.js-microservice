@@ -9,8 +9,9 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   if (err instanceof CustomError) {
-    res.status(err.statusCode).json({ errors: err.serializeErrors() })
+    return res.status(err.statusCode).json({ errors: err.serializeErrors() })
   } else {
-    res.status(500).json({ errors: [{ message: 'Internal server error' }] })
+    console.error(err)
+    res.status(500).json({ errors: [{ message: 'Something went wrong!' }] })
   }
 }
