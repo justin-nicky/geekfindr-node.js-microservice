@@ -1,5 +1,4 @@
-import express from 'express'
-import { json } from 'body-parser'
+import express, { urlencoded, json } from 'express'
 import 'express-async-errors'
 
 import { signupRouter } from './routes/signup'
@@ -12,6 +11,7 @@ import { connectDB } from './config/db'
 const app = express()
 app.set('trust proxy', true)
 app.use(json())
+app.use(urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
   res.send('Hello World')
