@@ -7,6 +7,7 @@ import { Password } from '../utils/password'
 interface UserAttrs {
   email: string
   password?: string
+  avatar?: string
 }
 
 // An interface that describes the properties
@@ -20,18 +21,34 @@ interface UserModel extends mongoose.Model<UserDoc> {
 interface UserDoc extends mongoose.Document {
   email: string
   password?: string
+  avatar?: string
 }
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+    },
+    avatar: {
+      type: String,
+    },
   },
-  password: {
-    type: String,
-  },
-})
+  {
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password
+        delete ret.__v
+        ret.id = ret._id
+        delete ret._id
+      },
+    },
+  }
+)
 
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {

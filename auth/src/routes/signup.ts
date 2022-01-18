@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express'
 import { body, validationResult } from 'express-validator'
+import md5 from 'md5'
 
 import { RequestValidationError } from '../errors/requestValidationError'
 import { User } from '../models/user'
@@ -33,8 +34,13 @@ router.get(
       throw new BadRequestError('User already exists')
     }
 
+    //generating profile image using gravatar
+    const avatar = `https://www.gravatar.com/avatar/${md5(
+      email.trim().toLowerCase()
+    )}?d=retro`
+
     //creating new user
-    const user = User.build({ email, password })
+    const user = User.build({ email, password, avatar })
     await user.save()
 
     //generating auth token
