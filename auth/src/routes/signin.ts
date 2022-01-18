@@ -37,6 +37,7 @@ router.post(
     const token = generateToken({
       userId: existingUser.id,
       email: existingUser.email,
+      username: existingUser.username,
     })
     res
       .cookie('token', token, { httpOnly: true })
