@@ -10,14 +10,8 @@ import { generateToken } from '../utils/generateToken'
 const router = express.Router()
 
 const requestBodyValidators = [
-  body('email')
-    .exists()
-    .withMessage('Email is required')
-    .isEmail()
-    .withMessage('Email id is not valid'),
+  body('email').isEmail().withMessage('Email id is not valid or not provided'),
   body('password')
-    .exists()
-    .withMessage('Password is required')
     .trim()
     .isLength({ min: 4, max: 20 })
     .withMessage('Password should be between 4 and 20 characters in length'),
