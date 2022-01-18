@@ -30,7 +30,7 @@ const start = async () => {
     throw new Error('JWT_SECRET must be defined')
   }
   if (!process.env.MONGO_URL) {
-    throw new Error('MONGO_URI must be defined')
+    throw new Error('MONGO_URL must be defined')
   }
   connectDB()
   app.listen(3000, () => {
