@@ -15,6 +15,12 @@ spec:
       containers:
         - name: auth
           image: justinnicky/auth
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
 ---
 apiVersion: v1
 kind: Service
