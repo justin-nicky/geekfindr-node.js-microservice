@@ -11,7 +11,10 @@ const router = express.Router()
 
 const requestBodyValidators = [
   body('email').isEmail().withMessage('Email id is not valid or not provided'),
-  body('username').trim().notEmpty().withMessage('User name is not provided'),
+  body('username')
+    .trim()
+    .isLength({ min: 3, max: 10 })
+    .withMessage('Username should be between 3 and 10 characters in length'),
   body('password')
     .trim()
     .isLength({ min: 4, max: 20 })
@@ -49,7 +52,11 @@ router.post(
     await user.save()
 
     //generating auth token
-    const token = generateToken({ userId: user.id, email: user.email })
+    const token = generateToken({
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+    })
     res
       .cookie('token', token, { httpOnly: true })
       .status(201)
