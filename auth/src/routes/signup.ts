@@ -17,7 +17,7 @@ const requestBodyValidators = [
     .withMessage('Password should be between 4 and 20 characters in length'),
 ]
 
-router.get(
+router.post(
   '/api/v1/users/signup',
   requestBodyValidators,
   async (req: Request, res: Response) => {
