@@ -1,5 +1,6 @@
 import express, { urlencoded, json } from 'express'
 import 'express-async-errors'
+import cors from 'cors'
 
 import { signupRouter } from './routes/signup'
 import { signinRouter } from './routes/signin'
@@ -9,6 +10,7 @@ import { NotFoundError } from './errors/notFoundError'
 import { connectDB } from './config/db'
 
 const app = express()
+app.use(cors())
 app.set('trust proxy', true)
 app.use(json())
 app.use(urlencoded({ extended: true }))
