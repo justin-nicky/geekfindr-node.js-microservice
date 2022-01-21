@@ -2,11 +2,10 @@ import express, { urlencoded, json } from 'express'
 import 'express-async-errors'
 import cors from 'cors'
 
+import { errorHandler, NotFoundError } from '@geekfindr/common'
 import { signupRouter } from './routes/signup'
 import { signinRouter } from './routes/signin'
 import { signoutRouter } from './routes/signout'
-import { errorHandler } from './middlewares/errorHandler'
-import { NotFoundError } from './errors/notFoundError'
 import { connectDB } from './config/db'
 
 const app = express()

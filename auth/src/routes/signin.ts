@@ -1,9 +1,8 @@
 import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
 
-import { validateRequest } from '../middlewares/requestValidator'
+import { validateRequest, BadRequestError } from '@geekfindr/common'
 import { User } from '../models/user'
-import { BadRequestError } from '../errors/badRequestError'
 import { Password } from '../utils/password'
 import { generateToken } from '../utils/generateToken'
 

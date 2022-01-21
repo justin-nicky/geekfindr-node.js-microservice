@@ -2,9 +2,8 @@ import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
 import md5 from 'md5'
 
-import { validateRequest } from '../middlewares/requestValidator'
+import { validateRequest, BadRequestError } from '@geekfindr/common'
 import { User } from '../models/user'
-import { BadRequestError } from '../errors/badRequestError'
 import { generateToken } from '../utils/generateToken'
 
 const router = express.Router()
