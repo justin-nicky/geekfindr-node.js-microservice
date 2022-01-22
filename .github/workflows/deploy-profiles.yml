@@ -1,0 +1,25 @@
+name: deploy-profiles
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'profiles/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd auth && docker build -t justinnicky/profiles .
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env: 
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker push justinnicky/profiles
+      - uses: digitalocean/action-doctl@v2
+        with: 
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - run: doctl kubernetes cluster kubeconfig save geekfindr
+      - run: kubectl rollout restart deployment pforiles-depl
