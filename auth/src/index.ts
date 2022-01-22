@@ -1,6 +1,7 @@
 import express, { urlencoded, json } from 'express'
 import 'express-async-errors'
 import cors from 'cors'
+import morgan from 'morgan'
 
 import { errorHandler, NotFoundError } from '@geekfindr/common'
 import { signupRouter } from './routes/signup'
@@ -13,6 +14,7 @@ app.use(cors())
 app.set('trust proxy', true)
 app.use(json())
 app.use(urlencoded({ extended: true }))
+app.use(morgan('tiny'))
 
 app.get('/', (req, res) => {
   res.send('Hello World')

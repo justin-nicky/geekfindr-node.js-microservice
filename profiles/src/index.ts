@@ -2,6 +2,7 @@ import express, { urlencoded, json } from 'express'
 import 'express-async-errors'
 import cors from 'cors'
 import { errorHandler, NotFoundError } from '@geekfindr/common'
+import morgan from 'morgan'
 
 import { connectDB } from './config/db'
 import { updateMyProfileRouter } from './routes/updateMyProfile'
@@ -11,6 +12,7 @@ app.use(cors())
 app.set('trust proxy', true)
 app.use(json())
 app.use(urlencoded({ extended: true }))
+app.use(morgan('tiny'))
 
 app.get('/', (req, res) => {
   res.send('Hello World')
