@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profiles-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profiles
+  template:
+    metadata:
+      labels:
+        app: profiles
+    spec:
+      containers:
+        - name: profiles
+          image: justinnicky/profiles
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-url
+                  key: MONGO_URL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profiles-srv
+spec:
+  selector:
+    app: profiles
+  ports:
+    - name: profiles
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

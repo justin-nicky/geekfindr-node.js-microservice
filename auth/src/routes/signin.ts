@@ -8,7 +8,7 @@ import { generateToken } from '../utils/generateToken'
 
 const router = express.Router()
 
-const requestBodyValidators = [
+const requestBodyValidatorMiddlewares = [
   body('email').isEmail().withMessage('Email id is not valid or not provided'),
   body('password').trim().notEmpty().withMessage('Password is required'),
   validateRequest,
@@ -16,7 +16,7 @@ const requestBodyValidators = [
 
 router.post(
   '/api/v1/users/signin',
-  requestBodyValidators,
+  requestBodyValidatorMiddlewares,
   async (req: Request, res: Response) => {
     const { email, password } = req.body
     //checking if user with email already exists
@@ -37,6 +37,7 @@ router.post(
       userId: existingUser.id,
       email: existingUser.email,
       username: existingUser.username,
+      avatar: existingUser.avatar,
     })
     res
       .cookie('token', token, { httpOnly: true })
