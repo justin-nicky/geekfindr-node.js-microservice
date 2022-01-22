@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'profiles/**'
+      - 'common/**'
 
 jobs:
   build:
@@ -22,4 +23,4 @@ jobs:
         with: 
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - run: doctl kubernetes cluster kubeconfig save geekfindr
-      - run: kubectl rollout restart deployment pforiles-depl
+      - run: kubectl rollout restart deployment profiles-depl
