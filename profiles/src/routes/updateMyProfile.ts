@@ -104,11 +104,16 @@ router.patch(
       skills,
       socials,
     } = req.body
-    const profile: ProfileDoc = (await Profile.findOne({
+    let profile: ProfileDoc = (await Profile.findOne({
       userId: req.user.id,
     })) as ProfileDoc
     if (!profile) {
-      throw new Error('Something went wrong')
+      profile = Profile.build({
+        userId: req.user.id,
+        email: req.user.email,
+        username: req.user.username,
+        avatar: req.user.avatar,
+      }) as any
     }
     if (bio) {
       profile.bio = bio
