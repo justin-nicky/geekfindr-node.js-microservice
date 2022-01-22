@@ -17,3 +17,11 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: justinnicky/profiles
+      context: profiles
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .

@@ -2,14 +2,13 @@ import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
 import md5 from 'md5'
 
-import { validateRequest } from '../middlewares/requestValidator'
+import { validateRequest, BadRequestError } from '@geekfindr/common'
 import { User } from '../models/user'
-import { BadRequestError } from '../errors/badRequestError'
 import { generateToken } from '../utils/generateToken'
 
 const router = express.Router()
 
-const requestBodyValidators = [
+const requestBodyValidatorMiddlewares = [
   body('email').isEmail().withMessage('Email id is not valid or not provided'),
   body('username')
     .trim()
@@ -24,7 +23,7 @@ const requestBodyValidators = [
 
 router.post(
   '/api/v1/users/signup',
-  requestBodyValidators,
+  requestBodyValidatorMiddlewares,
   async (req: Request, res: Response) => {
     const { email, password, username } = req.body
 
@@ -56,6 +55,7 @@ router.post(
       userId: user.id,
       email: user.email,
       username: user.username,
+      avatar: user.avatar,
     })
     res
       .cookie('token', token, { httpOnly: true })

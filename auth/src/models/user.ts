@@ -24,6 +24,8 @@ interface UserDoc extends mongoose.Document {
   username: string
   password?: string
   avatar?: string
+  createdAt: string
+  updatedAt: string
 }
 
 const userSchema = new mongoose.Schema(
@@ -54,6 +56,7 @@ const userSchema = new mongoose.Schema(
         delete ret._id
       },
     },
+    timestamps: true,
   }
 )
 

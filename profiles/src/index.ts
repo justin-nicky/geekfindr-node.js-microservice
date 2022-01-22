@@ -1,12 +1,10 @@
 import express, { urlencoded, json } from 'express'
 import 'express-async-errors'
 import cors from 'cors'
-
 import { errorHandler, NotFoundError } from '@geekfindr/common'
-import { signupRouter } from './routes/signup'
-import { signinRouter } from './routes/signin'
-import { signoutRouter } from './routes/signout'
+
 import { connectDB } from './config/db'
+import { updateMyProfileRouter } from './routes/updateMyProfile'
 
 const app = express()
 app.use(cors())
@@ -17,10 +15,7 @@ app.use(urlencoded({ extended: true }))
 app.get('/', (req, res) => {
   res.send('Hello World')
 })
-app.use(signinRouter)
-app.use(signupRouter)
-app.use(signoutRouter)
-
+app.use(updateMyProfileRouter)
 app.all('*', () => {
   throw new NotFoundError()
 })
@@ -35,7 +30,7 @@ const start = async () => {
   }
   connectDB()
   app.listen(3000, () => {
-    console.log('Auth service listening on port 3000...')
+    console.log('Profile service listening on port 3000...')
   })
 }
 start()
