@@ -105,12 +105,13 @@ router.patch(
       socials,
     } = req.body
     let profile: ProfileDoc = (await Profile.findOne({
-      userId: req.user.id,
+      userId: req.user.userId,
     })) as ProfileDoc
+
     if (!profile) {
       profile = Profile.build({
-        userId: req.user.id,
         email: req.user.email,
+        userId: req.user.userId,
         username: req.user.username,
         avatar: req.user.avatar,
       }) as any
@@ -137,7 +138,7 @@ router.patch(
       profile.socials = socials
     }
     await profile.save()
-    const updatedPfofile = await Profile.findOne({ userId: req.user.id })
+    const updatedPfofile = await Profile.findOne({ userId: req.user.userId })
     res.status(200).json({
       ...updatedPfofile!.toJSON(),
     })
