@@ -6,6 +6,7 @@ import morgan from 'morgan'
 
 import { connectDB } from './config/db'
 import { updateMyProfileRouter } from './routes/updateMyProfile'
+import { getMyProfileRouter } from './routes/getMyProfile'
 
 const app = express()
 app.use(cors())
@@ -17,6 +18,7 @@ app.use(morgan('tiny'))
 app.get('/api/v1/profiles', (req, res) => {
   res.send('Hello World')
 })
+app.use(getMyProfileRouter)
 app.use(updateMyProfileRouter)
 app.all('*', () => {
   throw new NotFoundError()
