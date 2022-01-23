@@ -16,7 +16,7 @@ app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('tiny'))
 
-app.get('/api/v1/auth', (req, res) => {
+app.get('/api/v1/users', (req, res) => {
   res.send('Hello World')
 })
 app.use(signinRouter)
