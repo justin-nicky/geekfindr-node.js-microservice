@@ -2,8 +2,8 @@ import express, { urlencoded, json } from 'express'
 import 'express-async-errors'
 import cors from 'cors'
 import morgan from 'morgan'
-
 import { errorHandler, NotFoundError } from '@geekfindr/common'
+
 import { signupRouter } from './routes/signup'
 import { signinRouter } from './routes/signin'
 import { signoutRouter } from './routes/signout'

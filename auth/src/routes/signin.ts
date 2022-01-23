@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
-
 import { validateRequest, BadRequestError } from '@geekfindr/common'
+
 import { User } from '../models/user'
 import { Password } from '../utils/password'
 import { generateToken } from '../utils/generateToken'

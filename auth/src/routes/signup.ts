@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
 import md5 from 'md5'
-
 import { validateRequest, BadRequestError } from '@geekfindr/common'
+
 import { User } from '../models/user'
 import { generateToken } from '../utils/generateToken'
 
