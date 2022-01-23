@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd auth && docker build -t justinnicky/profiles .
+      - run: cd profiles && docker build -t justinnicky/profiles .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env: 
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
