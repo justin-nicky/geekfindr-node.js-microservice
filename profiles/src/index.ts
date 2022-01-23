@@ -14,7 +14,7 @@ app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('tiny'))
 
-app.get('/api/v1/profiles/', (req, res) => {
+app.get('/api/v1/profiles', (req, res) => {
   res.send('Hello World')
 })
 app.use(updateMyProfileRouter)
