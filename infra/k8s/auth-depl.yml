@@ -26,6 +26,10 @@ spec:
                 secretKeyRef:
                   name: mongo-url
                   key: MONGO_URL
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
 ---
 apiVersion: v1
 kind: Service

@@ -8,6 +8,8 @@ import { signupRouter } from './routes/signup'
 import { signinRouter } from './routes/signin'
 import { signoutRouter } from './routes/signout'
 import { connectDB } from './config/db'
+import { connectEventBus } from './config/eventBus'
+import { natsWrapper } from './natsWrapper'
 
 const app = express()
 app.use(cors())
@@ -35,7 +37,19 @@ const start = async () => {
   if (!process.env.MONGO_URL) {
     throw new Error('MONGO_URL must be defined')
   }
+  if (!process.env.NATS_CLIENT_ID) {
+    throw new Error('NATS_CLIENT_ID must be defined')
+  }
   connectDB()
+  connectEventBus()
+  //close the connection to the event bus when the server stops
+  natsWrapper.client.on('close', () => {
+    console.log('NATS connection closed!')
+    process.exit()
+  })
+  process.on('SIGINT', () => natsWrapper.client.close())
+  process.on('SIGTERM', () => natsWrapper.client.close())
+
   app.listen(3000, () => {
     console.log('Auth service listening on port 3000...')
   })
