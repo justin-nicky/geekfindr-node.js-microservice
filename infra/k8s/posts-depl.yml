@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: profiles-depl
+  name: posts-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: profiles
+      app: posts
   template:
     metadata:
       labels:
-        app: profiles
+        app: posts
     spec:
       containers:
-        - name: profiles
-          image: justinnicky/profiles
+        - name: posts
+          image: justinnicky/posts
           env:
             - name: JWT_SECRET
               valueFrom:
@@ -34,12 +34,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: profiles-srv
+  name: posts-srv
 spec:
   selector:
-    app: profiles
+    app: posts
   ports:
-    - name: profiles
+    - name: posts
       protocol: TCP
       port: 3000
       targetPort: 3000

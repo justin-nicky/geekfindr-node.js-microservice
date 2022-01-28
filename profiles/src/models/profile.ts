@@ -3,8 +3,8 @@ import mongoose from 'mongoose'
 // An interface that describes the properties
 // that are requried to create a new Profile
 interface ProfileAttrs {
+  id?: string
   email: string
-  userId: string
   username: string
   avatar?: string
   bio?: string
@@ -31,7 +31,6 @@ interface ProfileModel extends mongoose.Model<ProfileDoc> {
 export interface ProfileDoc extends mongoose.Document {
   email: string
   username: string
-  userId: string
   avatar?: string
   bio?: string
   organizations?: string[]
@@ -59,10 +58,6 @@ const profileSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-    },
-    userId: {
-      type: String,
-      required: true,
     },
     avatar: {
       type: String,
@@ -114,7 +109,9 @@ const profileSchema = new mongoose.Schema(
 )
 
 profileSchema.statics.build = (attrs: ProfileAttrs) => {
-  return new Profile(attrs)
+  const _id = attrs.id
+  delete attrs.id
+  return new Profile({ ...attrs, _id })
 }
 const Profile = mongoose.model<ProfileDoc, ProfileModel>(
   'Profile',

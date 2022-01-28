@@ -25,3 +25,11 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: justinnicky/posts
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .

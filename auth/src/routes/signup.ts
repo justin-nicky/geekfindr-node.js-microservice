@@ -53,15 +53,15 @@ router.post(
     await user.save()
     //publishing user-created event
     new UserCreatedPublisher(natsWrapper.client).publish({
-      userId: user.id,
+      id: user.id,
       email: user.email,
-      userName: user.username,
-      avatar: user.avatar!,
+      username: user.username,
+      avatar: user.avatar,
     })
 
     //generating auth token
     const token = generateToken({
-      userId: user.id,
+      id: user.id,
       email: user.email,
       username: user.username,
       avatar: user.avatar,

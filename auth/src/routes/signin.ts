@@ -34,7 +34,7 @@ router.post(
     }
     //generating auth token
     const token = generateToken({
-      userId: existingUser.id,
+      id: existingUser.id,
       email: existingUser.email,
       username: existingUser.username,
       avatar: existingUser.avatar,
