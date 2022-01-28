@@ -45,7 +45,7 @@ const start = async () => {
   process.on('SIGTERM', () => natsWrapper.client.close())
 
   app.listen(3000, () => {
-    console.log('Auth service listening on port 3000...')
+    console.log('Post service listening on port 3000...')
   })
 }
 start()
