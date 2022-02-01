@@ -5,6 +5,8 @@ import { validateRequest, BadRequestError } from '@geekfindr/common'
 
 import { User } from '../models/user'
 import { generateToken } from '../utils/generateToken'
+import { UserCreatedPublisher } from '../events/publishers/userCreatedPublisher'
+import { natsWrapper } from '../natsWrapper'
 
 const router = express.Router()
 
@@ -49,10 +51,17 @@ router.post(
       username,
     })
     await user.save()
+    //publishing user-created event
+    new UserCreatedPublisher(natsWrapper.client).publish({
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      avatar: user.avatar,
+    })
 
     //generating auth token
     const token = generateToken({
-      userId: user.id,
+      id: user.id,
       email: user.email,
       username: user.username,
       avatar: user.avatar,

@@ -1,14 +1,14 @@
 import mongoose from 'mongoose'
 
-import { Password } from '../utils/password'
-
 // An interface that describes the properties
 // that are requried to create a new User
 interface UserAttrs {
-  email: string
+  id?: string
   username: string
-  password?: string
-  avatar: string
+  avatar?: string
+  followers?: string[]
+  following?: string[]
+  feed?: string[]
 }
 
 // An interface that describes the properties
@@ -19,39 +19,36 @@ interface UserModel extends mongoose.Model<UserDoc> {
 
 // An interface that describes the properties
 // that a User Document has
-interface UserDoc extends mongoose.Document {
-  email: string
+export interface UserDoc extends mongoose.Document {
   username: string
-  password?: string
-  avatar: string
-  createdAt: string
-  updatedAt: string
+  avatar?: string
+  followers?: string[]
+  following?: string[]
+  feed?: string[]
 }
 
 const userSchema = new mongoose.Schema(
   {
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     username: {
       type: String,
       required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
     },
     avatar: {
       type: String,
-      required: true,
+    },
+    followers: {
+      type: [String],
+    },
+    following: {
+      type: [String],
+    },
+    feed: {
+      type: [String],
     },
   },
   {
     toJSON: {
       transform(doc, ret) {
-        delete ret.password
         delete ret.__v
         ret.id = ret._id
         delete ret._id
@@ -61,15 +58,10 @@ const userSchema = new mongoose.Schema(
   }
 )
 
-userSchema.pre('save', async function (next) {
-  if (this.isModified('password')) {
-    this.password = await Password.hashPassword(this.password)
-  }
-  next()
-})
-
 userSchema.statics.build = (attrs: UserAttrs) => {
-  return new User(attrs)
+  const _id = attrs.id
+  delete attrs.id
+  return new User({ ...attrs, _id })
 }
 const User = mongoose.model<UserDoc, UserModel>('User', userSchema)
 

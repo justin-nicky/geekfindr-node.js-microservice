@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev src/index.ts"
+    "start": "ts-node-dev src/index.ts",
+    "update-common": "npm uninstall @geekfindr/commmon && npm install @geekfindr/common"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@geekfindr/common": "^1.0.5",
+    "@geekfindr/common": "^1.0.12",
     "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
