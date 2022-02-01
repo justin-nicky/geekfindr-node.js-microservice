@@ -7,6 +7,7 @@ import { errorHandler, NotFoundError } from '@geekfindr/common'
 import { connectDB } from './config/db'
 import { connectEventBus } from './config/eventBus'
 import { natsWrapper } from './natsWrapper'
+import { getSignedURLRouter } from './routes/getSignedURL'
 
 const app = express()
 app.use(cors())
@@ -15,9 +16,10 @@ app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('tiny'))
 
-app.get('/api/v1/users', (req, res) => {
+app.get('/api/v1/posts', (req, res) => {
   res.send('Hello World')
 })
+app.use(getSignedURLRouter)
 
 app.all('*', () => {
   throw new NotFoundError()
@@ -33,6 +35,12 @@ const start = async () => {
   }
   if (!process.env.NATS_CLIENT_ID) {
     throw new Error('NATS_CLIENT_ID must be defined')
+  }
+  if (!process.env.AWS_ACCESS_KEY_ID) {
+    throw new Error('AWS_ACCESS_KEY_ID must be defined')
+  }
+  if (!process.env.AWS_SECRET_ACCESS_KEY) {
+    throw new Error('AWS_SECRET_ACCESS_KEY must be defined')
   }
   connectDB()
   connectEventBus()
