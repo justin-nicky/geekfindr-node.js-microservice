@@ -33,6 +33,7 @@ router.get(
           console.error(err)
           throw new BadRequestError("Couldn't generate signed URL")
         }
+
         console.log(key, url)
         res.send({ key, url })
       })
