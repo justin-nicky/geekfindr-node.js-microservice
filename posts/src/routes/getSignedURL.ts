@@ -1,7 +1,12 @@
 import express, { Request, Response } from 'express'
 import AWS from 'aws-sdk'
 import crypto from 'crypto'
-import { BadRequestError, protectRoute } from '@geekfindr/common'
+import {
+  BadRequestError,
+  protectRoute,
+  validateRequest,
+} from '@geekfindr/common'
+import { query } from 'express-validator'
 
 const router = express.Router()
 const s3 = new AWS.S3({
@@ -9,37 +14,46 @@ const s3 = new AWS.S3({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 })
 
+const requestParamValidatorMiddlewares = [
+  query('fileType')
+    .isString()
+    .withMessage('file type is required')
+    .bail()
+    //as of now, only image files are allowed
+    .isIn(['image'])
+    .withMessage('Unsupported file type'),
+  query('fileSubType')
+    .isString()
+    .notEmpty()
+    .withMessage('File sub-type is required'),
+  validateRequest,
+]
+
 router.get(
   '/api/v1/uploads/signed-url',
   protectRoute,
+  requestParamValidatorMiddlewares,
   async (req: Request, res: Response) => {
-    const acceptedTypes = ['image/gif', 'image/jpeg', 'image/jpg', 'image/png']
-    const contentType = req.headers['content-type']
+    const fileType = req.query.fileType as string
+    const fileSubType = req.query.fileSubType as string
 
-    if (contentType && acceptedTypes.includes(contentType)) {
-      // Generate a random name for the image file
-      const key = `${req.user.id}/${crypto.randomBytes(32).toString('hex')}.${
-        contentType.split('/')[1]
-      }`
-
-      // Generate a signed URL for the image file
-      const params = {
-        Bucket: 'geekfindr-uploads-bucket',
-        ContentType: contentType,
-        Key: key,
-      }
-      s3.getSignedUrl('putObject', params, (err, url) => {
-        if (err) {
-          console.error(err)
-          throw new BadRequestError("Couldn't generate signed URL")
-        }
-
-        console.log(key, url)
-        res.send({ key, url })
-      })
-    } else {
-      throw new BadRequestError('Invalid content type')
+    // Generate a random name for the file
+    const key = `${req.user.id}/${crypto
+      .randomBytes(32)
+      .toString('hex')}.${fileSubType}`
+    // Generate a signed URL for the file
+    const params = {
+      Bucket: 'geekfindr-uploads-bucket',
+      ContentType: `${fileType}/${fileSubType}`,
+      Key: key,
     }
+    s3.getSignedUrl('putObject', params, (err, url) => {
+      if (err) {
+        console.error(err)
+        throw new BadRequestError("Couldn't generate signed URL")
+      }
+      res.send({ key, url })
+    })
   }
 )
 
