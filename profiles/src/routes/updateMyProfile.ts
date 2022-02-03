@@ -133,7 +133,7 @@ router.patch(
       profile.socials = socials
     }
     await profile.save()
-    const updatedPfofile = await Profile.findOne({ userId: req.user.id })
+    const updatedPfofile = await Profile.findOne({ _id: req.user.id })
     res.status(200).json({
       ...updatedPfofile!.toJSON(),
     })
