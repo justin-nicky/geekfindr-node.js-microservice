@@ -8,6 +8,8 @@ import { connectDB } from './config/db'
 import { connectEventBus } from './config/eventBus'
 import { natsWrapper } from './natsWrapper'
 import { getSignedURLRouter } from './routes/getSignedURL'
+import { addPostRouter } from './routes/addPost'
+import { getMyPostsRouter } from './routes/getMyPosts'
 
 const app = express()
 app.use(cors())
@@ -20,6 +22,8 @@ app.get('/api/v1/posts', (req, res) => {
   res.send('Hello World')
 })
 app.use(getSignedURLRouter)
+app.use(addPostRouter)
+app.use(getMyPostsRouter)
 
 app.all('*', () => {
   throw new NotFoundError()

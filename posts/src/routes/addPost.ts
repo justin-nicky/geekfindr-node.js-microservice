@@ -1,5 +1,9 @@
 import express, { Request, Response } from 'express'
-import { protectRoute, validateRequest } from '@geekfindr/common'
+import {
+  BadRequestError,
+  protectRoute,
+  validateRequest,
+} from '@geekfindr/common'
 import { body } from 'express-validator'
 
 import { Post } from '../models/post'
@@ -40,23 +44,34 @@ const requestBodyValiatiorMiddlewares = [
   validateRequest,
 ]
 
-// interface PostAttrs {
-//     isProject: boolean
-//     mediaType: MediaTypes
-//     mediaURL: string
-//     description: string
-//     likeCount: number
-//     comments?: object[]
-//     teamJoinRequests?: object[]
-//     isOrganization: boolean
-//     owner: string
-//   }
-
 router.post(
   '/api/v1/posts',
   protectRoute,
   requestBodyValiatiorMiddlewares,
-  (req: Request, res: Response) => {
-    res.send({})
+  async (req: Request, res: Response) => {
+    const { mediaType, isProject, mediaURL, description, isOrganization } =
+      req.body
+    const existingPost = await Post.findOne({
+      owner: req.user.id,
+      mediaType,
+      isProject,
+      mediaURL,
+      description,
+      isOrganization,
+    })
+    if (existingPost) {
+      throw new BadRequestError('Cannot have duplicate posts.')
+    }
+    const post = await Post.build({
+      mediaType,
+      isProject,
+      mediaURL,
+      description,
+      isOrganization,
+      owner: req.user.id,
+    }).save()
+    res.json(post)
   }
 )
+
+export { router as addPostRouter }
