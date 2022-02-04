@@ -11,6 +11,7 @@ import { getSignedURLRouter } from './routes/getSignedURL'
 import { addPostRouter } from './routes/addPost'
 import { getMyPostsRouter } from './routes/getMyPosts'
 import { updatePostRouter } from './routes/editPost'
+import { deletePostRouter } from './routes/deletePost'
 
 const app = express()
 app.use(cors())
@@ -27,6 +28,7 @@ app.use(getSignedURLRouter)
 app.use(addPostRouter)
 app.use(getMyPostsRouter)
 app.use(updatePostRouter)
+app.use(deletePostRouter)
 
 app.all('*', () => {
   throw new NotFoundError()
