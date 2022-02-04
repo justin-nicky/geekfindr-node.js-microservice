@@ -12,11 +12,12 @@ interface PostAttrs {
   mediaType: MediaTypes
   mediaURL: string
   description: string
-  likeCount: number
+  likeCount?: number
   comments?: object[]
   teamJoinRequests?: object[]
   isOrganization: boolean
   owner: string
+  isDeleted?: boolean
 }
 
 // An interface that describes the properties
@@ -33,10 +34,11 @@ export interface PostDoc extends mongoose.Document {
   mediaURL: string
   description: string
   likeCount: number
-  comments?: object[]
+  comments: object[]
   teamJoinRequests?: object[]
   isOrganization: boolean
   owner: string
+  isDeleted: boolean
 }
 
 const postSchema = new mongoose.Schema(
@@ -70,11 +72,18 @@ const postSchema = new mongoose.Schema(
     },
     comments: {
       type: [Object],
+      default: [],
     },
     teamJoinRequests: {
       type: [Object],
+      default: [],
     },
     isOrganization: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    isDeleted: {
       type: Boolean,
       required: true,
       default: false,
@@ -86,6 +95,7 @@ const postSchema = new mongoose.Schema(
         delete ret.__v
         ret.id = ret._id
         delete ret._id
+        delete ret.isDeleted
       },
     },
     timestamps: true,
