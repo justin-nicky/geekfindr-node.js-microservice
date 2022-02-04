@@ -11,6 +11,7 @@ router.get(
   async (req: Request, res: Response) => {
     const posts = await Post.find({
       owner: req.user.id,
+      isDeleted: false,
     })
     res.json(posts)
   }

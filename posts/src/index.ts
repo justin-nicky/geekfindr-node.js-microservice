@@ -10,6 +10,7 @@ import { natsWrapper } from './natsWrapper'
 import { getSignedURLRouter } from './routes/getSignedURL'
 import { addPostRouter } from './routes/addPost'
 import { getMyPostsRouter } from './routes/getMyPosts'
+import { updatePostRouter } from './routes/editPost'
 
 const app = express()
 app.use(cors())
@@ -22,8 +23,10 @@ app.get('/api/v1/posts', (req, res) => {
   res.send('Hello World')
 })
 app.use(getSignedURLRouter)
+
 app.use(addPostRouter)
 app.use(getMyPostsRouter)
+app.use(updatePostRouter)
 
 app.all('*', () => {
   throw new NotFoundError()
