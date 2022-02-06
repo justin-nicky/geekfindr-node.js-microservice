@@ -36,6 +36,11 @@ spec:
                 secretKeyRef:
                   name: aws-secret-access-key
                   key: AWS_SECRET_ACCESS_KEY
+            - name: S3_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: s3-base-url
+                  key: S3_BASE_URL
             - name: NATS_CLIENT_ID
               valueFrom:
                 fieldRef:

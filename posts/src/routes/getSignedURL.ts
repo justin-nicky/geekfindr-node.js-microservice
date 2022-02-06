@@ -38,6 +38,7 @@ router.get(
   async (req: Request, res: Response) => {
     const fileType = req.query.fileType as string
     const fileSubType = req.query.fileSubType as string
+    const s3BaseUrl = process.env.S3_BASE_URL
 
     // Generate a random name for the file
     const key = `${req.user.id}/${crypto
@@ -54,7 +55,7 @@ router.get(
         console.error(err)
         throw new BadRequestError("Couldn't generate signed URL")
       }
-      res.send({ key, url })
+      res.send({ key: `${s3BaseUrl}${key}`, url })
     })
   }
 )

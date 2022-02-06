@@ -51,6 +51,9 @@ const start = async () => {
   if (!process.env.AWS_SECRET_ACCESS_KEY) {
     throw new Error('AWS_SECRET_ACCESS_KEY must be defined')
   }
+  if (!process.env.S3_BASE_URL) {
+    throw new Error('S3_BASE_URL must be defined')
+  }
   connectDB()
   connectEventBus()
   //close the connection to the event bus when the server stops
