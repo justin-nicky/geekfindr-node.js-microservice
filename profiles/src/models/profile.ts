@@ -13,7 +13,7 @@ interface ProfileAttrs {
   following?: string[]
   followersCount?: number
   followingCount?: number
-  experience?: object[]
+  experience?: string
   education?: object[]
   works?: object[]
   skills?: string[]
@@ -39,7 +39,7 @@ export interface ProfileDoc extends mongoose.Document {
   following?: string[]
   followersCount?: number
   followingCount?: number
-  experience?: object[]
+  experience?: string
   education?: object[]
   works?: object[]
   skills?: string[]
@@ -86,7 +86,8 @@ const profileSchema = new mongoose.Schema(
       default: 0,
     },
     experience: {
-      type: [Object],
+      type: String,
+      default: '',
     },
     education: {
       type: [Object],
