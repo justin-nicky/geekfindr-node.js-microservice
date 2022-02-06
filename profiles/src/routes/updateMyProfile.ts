@@ -14,6 +14,12 @@ const requestBodyValidatorMiddlewares = [
       isString: true,
       errorMessage: 'Bio must be a string',
     },
+    role: {
+      in: ['body'],
+      optional: true,
+      isString: true,
+      errorMessage: 'Role must be a string',
+    },
     organizations: {
       in: ['body'],
       optional: true,
@@ -103,6 +109,7 @@ router.patch(
       works,
       skills,
       socials,
+      role,
     } = req.body
     let profile: ProfileDoc = (await Profile.findOne({
       _id: req.user.id,
@@ -113,6 +120,9 @@ router.patch(
     }
     if (bio) {
       profile.bio = bio
+    }
+    if (role) {
+      profile.role = role
     }
     if (organizations) {
       profile.organizations = organizations
