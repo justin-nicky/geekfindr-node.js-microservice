@@ -18,6 +18,7 @@ interface ProfileAttrs {
   works?: object[]
   skills?: string[]
   socials?: object[]
+  role?: string
 }
 
 // An interface that describes the properties
@@ -45,6 +46,7 @@ export interface ProfileDoc extends mongoose.Document {
   socials?: object[]
   createdAt: string
   updatedAt: string
+  role: string
 }
 
 const profileSchema = new mongoose.Schema(
@@ -97,6 +99,10 @@ const profileSchema = new mongoose.Schema(
     },
     socials: {
       type: [Object],
+    },
+    role: {
+      type: String,
+      default: '',
     },
   },
   {
