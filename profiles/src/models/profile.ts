@@ -13,11 +13,12 @@ interface ProfileAttrs {
   following?: string[]
   followersCount?: number
   followingCount?: number
-  experience?: object[]
+  experience?: string
   education?: object[]
   works?: object[]
   skills?: string[]
   socials?: object[]
+  role?: string
 }
 
 // An interface that describes the properties
@@ -38,13 +39,14 @@ export interface ProfileDoc extends mongoose.Document {
   following?: string[]
   followersCount?: number
   followingCount?: number
-  experience?: object[]
+  experience?: string
   education?: object[]
   works?: object[]
   skills?: string[]
   socials?: object[]
   createdAt: string
   updatedAt: string
+  role: string
 }
 
 const profileSchema = new mongoose.Schema(
@@ -84,7 +86,8 @@ const profileSchema = new mongoose.Schema(
       default: 0,
     },
     experience: {
-      type: [Object],
+      type: String,
+      default: '',
     },
     education: {
       type: [Object],
@@ -97,6 +100,10 @@ const profileSchema = new mongoose.Schema(
     },
     socials: {
       type: [Object],
+    },
+    role: {
+      type: String,
+      default: '',
     },
   },
   {
