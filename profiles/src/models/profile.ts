@@ -64,6 +64,7 @@ const profileSchema = new mongoose.Schema(
     },
     bio: {
       type: String,
+      default: '',
     },
     organizations: {
       type: [String],
@@ -76,9 +77,11 @@ const profileSchema = new mongoose.Schema(
     },
     followersCount: {
       type: Number,
+      default: 0,
     },
     followingCount: {
       type: Number,
+      default: 0,
     },
     experience: {
       type: [Object],
