@@ -9,6 +9,7 @@ import { updateMyProfileRouter } from './routes/updateMyProfile'
 import { getMyProfileRouter } from './routes/getMyProfile'
 import { connectEventBus } from './config/eventBus'
 import { natsWrapper } from './natsWrapper'
+import { addFollowingRouter } from './routes/addFollowing'
 
 const app = express()
 app.use(cors())
@@ -22,6 +23,7 @@ app.get('/api/v1/profiles', (req, res) => {
 })
 app.use(getMyProfileRouter)
 app.use(updateMyProfileRouter)
+app.use(addFollowingRouter)
 app.all('*', () => {
   throw new NotFoundError()
 })

@@ -38,12 +38,15 @@ const userSchema = new mongoose.Schema(
     },
     followers: {
       type: [String],
+      default: [],
     },
     following: {
       type: [String],
+      default: [],
     },
     feed: {
       type: [String],
+      default: [],
     },
   },
   {

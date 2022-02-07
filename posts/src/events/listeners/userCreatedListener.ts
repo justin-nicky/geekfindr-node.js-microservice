@@ -1,7 +1,7 @@
 import { Message } from 'node-nats-streaming'
 import { UserCreatedEvent, Subjects, Listener } from '@geekfindr/common'
 
-import { User } from '../models/user'
+import { User } from '../../models/user'
 
 export class UserCreatedListener extends Listener<UserCreatedEvent> {
   readonly subject = Subjects.UserCreated
