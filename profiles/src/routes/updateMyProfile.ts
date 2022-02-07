@@ -35,14 +35,8 @@ const requestBodyValidatorMiddlewares = [
     experience: {
       in: ['body'],
       optional: true,
-      isArray: true,
-      errorMessage: 'Experience must be an array',
-      custom: {
-        options: (value: Array<object>) => {
-          return value.every((v) => typeof v === 'object')
-        },
-        errorMessage: 'Experience must be an array of objects',
-      },
+      isString: true,
+      errorMessage: 'Experience must be a string',
     },
     education: {
       in: ['body'],
