@@ -16,6 +16,8 @@ router.get(
     if (!profile) {
       throw new BadRequestError('Profile not found')
     }
+    delete profile.followers
+    delete profile.following
     res.status(200).json({
       ...profile.toJSON(),
     })
