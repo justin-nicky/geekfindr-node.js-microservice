@@ -5,8 +5,10 @@ import {
   validateRequest,
 } from '@geekfindr/common'
 import { body } from 'express-validator'
+import mongoose from 'mongoose'
 
 import { Post } from '../models/post'
+import { User } from '../models/user'
 
 const router = express.Router()
 
@@ -70,6 +72,18 @@ router.post(
       isOrganization,
       owner: req.user.id,
     }).save()
+
+    //save post to the follower's feed
+    const user = await User.findById(req.user.id)
+    const followers = user?.followers
+    const followersIds = followers?.map(
+      (follower) => new mongoose.Types.ObjectId(follower)
+    )
+    await User.updateMany(
+      { _id: { $in: followersIds } },
+      { $push: { feed: post._id } }
+    )
+
     res.json(post)
   }
 )

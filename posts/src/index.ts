@@ -12,6 +12,7 @@ import { addPostRouter } from './routes/addPost'
 import { getMyPostsRouter } from './routes/getMyPosts'
 import { updatePostRouter } from './routes/editPost'
 import { deletePostRouter } from './routes/deletePost'
+import { getMyFeedRouter } from './routes/getMyFeed'
 
 const app = express()
 app.use(cors())
@@ -29,6 +30,7 @@ app.use(addPostRouter)
 app.use(getMyPostsRouter)
 app.use(updatePostRouter)
 app.use(deletePostRouter)
+app.use(getMyFeedRouter)
 
 app.all('*', () => {
   throw new NotFoundError()
