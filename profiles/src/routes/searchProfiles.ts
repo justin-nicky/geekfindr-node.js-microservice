@@ -23,6 +23,7 @@ const requestBodyValidatorMiddlewares = [
 router.get(
   '/api/v1/profiles',
   protectRoute,
+  requestBodyValidatorMiddlewares,
   async (req: Request, res: Response) => {
     let match = { username: {}, role: {} }
     match.username = req.query.searchUserName
@@ -45,8 +46,25 @@ router.get(
       { $limit: 20 },
       {
         $project: {
-          followers: 0,
-          following: 0,
+          id: '$_id',
+          email: 1,
+          username: 1,
+          avatar: 1,
+          bio: 1,
+          organizations: 1,
+          followersCount: 1,
+          followingCount: 1,
+          experience: 1,
+          education: 1,
+          works: 1,
+          skills: 1,
+          socials: 1,
+          role: 1,
+        },
+      },
+      {
+        $project: {
+          _id: 0,
         },
       },
     ])

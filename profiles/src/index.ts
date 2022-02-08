@@ -11,6 +11,9 @@ import { connectEventBus } from './config/eventBus'
 import { natsWrapper } from './natsWrapper'
 import { addFollowingRouter } from './routes/addFollowing'
 import { searchProfiles } from './routes/searchProfiles'
+import { getProfile } from './routes/getProfile'
+import { getFollowers } from './routes/getFollowers'
+import { getFollowing } from './routes/getFollowing'
 
 const app = express()
 app.use(cors())
@@ -22,7 +25,10 @@ app.use(morgan('tiny'))
 app.use(getMyProfileRouter)
 app.use(updateMyProfileRouter)
 app.use(addFollowingRouter)
+app.use(getFollowers)
+app.use(getFollowing)
 app.use(searchProfiles)
+app.use(getProfile)
 app.get('/api/v1/profiles', (req, res) => {
   res.send('Hello World')
 })
