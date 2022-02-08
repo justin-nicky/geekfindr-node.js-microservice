@@ -6,11 +6,10 @@ interface ProfileAttrs {
   id?: string
   email: string
   username: string
+  role?: string
+  organizations?: string[]
   avatar?: string
   bio?: string
-  organizations?: string[]
-  followers?: string[]
-  following?: string[]
   followersCount?: number
   followingCount?: number
   experience?: string
@@ -18,7 +17,8 @@ interface ProfileAttrs {
   works?: object[]
   skills?: string[]
   socials?: object[]
-  role?: string
+  followers?: string[]
+  following?: string[]
 }
 
 // An interface that describes the properties
