@@ -10,6 +10,7 @@ import { getMyProfileRouter } from './routes/getMyProfile'
 import { connectEventBus } from './config/eventBus'
 import { natsWrapper } from './natsWrapper'
 import { addFollowingRouter } from './routes/addFollowing'
+import { searchProfiles } from './routes/searchProfiles'
 
 const app = express()
 app.use(cors())
@@ -18,12 +19,13 @@ app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('tiny'))
 
-app.get('/api/v1/profiles', (req, res) => {
-  res.send('Hello World')
-})
 app.use(getMyProfileRouter)
 app.use(updateMyProfileRouter)
 app.use(addFollowingRouter)
+app.use(searchProfiles)
+app.get('/api/v1/profiles', (req, res) => {
+  res.send('Hello World')
+})
 app.all('*', () => {
   throw new NotFoundError()
 })
