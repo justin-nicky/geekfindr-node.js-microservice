@@ -12,7 +12,9 @@ router.get(
     const posts = await Post.find({
       owner: req.user.id,
       isDeleted: false,
-    }).sort({ createdAt: -1 })
+    })
+      .populate('owner', 'username avatar')
+      .sort({ createdAt: -1 })
     res.json(posts)
   }
 )
