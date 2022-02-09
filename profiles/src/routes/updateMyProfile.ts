@@ -138,8 +138,8 @@ router.patch(
     }
     await profile.save()
     const updatedPfofile = await Profile.findOne({ _id: req.user.id })
-    delete profile.followers
-    delete profile.following
+    profile.followers = undefined
+    profile.following = undefined
     res.status(200).json({
       ...updatedPfofile!.toJSON(),
     })

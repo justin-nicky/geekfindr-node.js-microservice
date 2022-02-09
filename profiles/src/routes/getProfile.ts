@@ -25,9 +25,8 @@ router.get(
     if (!profile) {
       throw new Error('Profile not found.')
     }
-    delete profile.followers
-    delete profile.following
-    console.log(profile)
+    profile.followers = undefined
+    profile.following = undefined
 
     res.send(profile)
   }
