@@ -44,9 +44,7 @@ router.patch(
     if (mediaType && !mediaURL) {
       throw new BadRequestError('Media URL should be provided.')
     }
-    const post = await Post.findOne({
-      owner: req.user.id,
-    })
+    const post = await Post.findById(id)
     if (!post) {
       throw new BadRequestError('Post does not exist.')
     }
@@ -54,7 +52,8 @@ router.patch(
     //////////////////////////////////////////////////////////////////////////////
     //ToDo: change the post into a project type or vice versa
     //////////////////////////////////////////////////////////////////////////////
-    post.isProject = isProject ?? post.isProject
+    //post.isProject = isProject ?? post.isProject
+
     post.mediaURL = mediaURL ?? post.mediaURL
     post.description = description ?? post.description
     post.isOrganization = isOrganization ?? post.isOrganization

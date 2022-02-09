@@ -81,7 +81,7 @@ router.post(
     )
     await User.updateMany(
       { _id: { $in: followersIds } },
-      { $push: { feed: post._id } }
+      { $push: { feed: { $each: [post._id], $position: 0 } } }
     )
 
     res.json(post)
