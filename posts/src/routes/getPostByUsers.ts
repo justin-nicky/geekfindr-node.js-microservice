@@ -1,16 +1,24 @@
 import express, { Request, Response } from 'express'
-import { protectRoute } from '@geekfindr/common'
+import { protectRoute, validateRequest } from '@geekfindr/common'
+import { param } from 'express-validator'
 
 import { Post } from '../models/post'
 
 const router = express.Router()
 
+const requestBodyValiatiorMiddlewares = [
+  param('id').isMongoId().withMessage('Invalid id.'),
+  validateRequest,
+]
+
 router.get(
-  '/api/v1/posts/my-posts',
+  '/api/v1/posts/by-users/:id',
   protectRoute,
+  requestBodyValiatiorMiddlewares,
   async (req: Request, res: Response) => {
+    const id = req.params.id
     const posts = await Post.find({
-      owner: req.user.id,
+      owner: id,
       isDeleted: false,
     })
       .select('-comments -likes -teamJoinRequests')
@@ -20,4 +28,4 @@ router.get(
   }
 )
 
-export { router as getMyPostsRouter }
+export { router as getPostsByUsersRouter }

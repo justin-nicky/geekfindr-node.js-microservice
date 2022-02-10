@@ -17,6 +17,7 @@ import { addCommentRouter } from './routes/addComment'
 import { getCommentsRouter } from './routes/getComments'
 import { addLikeRouter } from './routes/addLike'
 import { getLikesRouter } from './routes/getLikes'
+import { getPostsByUsersRouter } from './routes/getPostByUsers'
 
 const app = express()
 app.use(cors())
@@ -32,6 +33,7 @@ app.use(getSignedURLRouter)
 
 app.use(addPostRouter)
 app.use(getMyPostsRouter)
+app.use(getPostsByUsersRouter)
 app.use(updatePostRouter)
 app.use(deletePostRouter)
 app.use(getMyFeedRouter)

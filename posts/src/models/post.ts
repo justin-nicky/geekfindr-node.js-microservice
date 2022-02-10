@@ -39,6 +39,7 @@ export interface PostDoc extends mongoose.Document {
   likes: Likes[]
   commentCount: number
   comments: object[]
+  teamJoinRequestCount: number
   teamJoinRequests?: object[]
   isOrganization: boolean
   owner: string
@@ -108,6 +109,10 @@ const postSchema = new mongoose.Schema(
       type: [commentSchema],
       default: [],
       required: true,
+    },
+    teamJoinRequestCount: {
+      type: Number,
+      default: 0,
     },
     teamJoinRequests: {
       type: [Object],
