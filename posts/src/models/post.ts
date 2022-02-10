@@ -12,9 +12,6 @@ interface PostAttrs {
   mediaType: MediaTypes
   mediaURL: string
   description: string
-  likeCount?: number
-  comments?: object[]
-  teamJoinRequests?: object[]
   isOrganization: boolean
   owner: string
   isDeleted?: boolean
@@ -34,12 +31,34 @@ export interface PostDoc extends mongoose.Document {
   mediaURL: string
   description: string
   likeCount: number
+  likes: string[]
+  commentCount: number
   comments: object[]
   teamJoinRequests?: object[]
   isOrganization: boolean
   owner: string
   isDeleted: boolean
 }
+
+const commentSchema = new mongoose.Schema({
+  comment: {
+    type: String,
+    required: true,
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+})
+
+const likeSchema = new mongoose.Schema({
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+})
 
 const postSchema = new mongoose.Schema(
   {
@@ -70,9 +89,20 @@ const postSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
-    comments: {
-      type: [Object],
+    likes: {
+      type: [likeSchema],
       default: [],
+      required: true,
+    },
+    commentCount: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    comments: {
+      type: [commentSchema],
+      default: [],
+      required: true,
     },
     teamJoinRequests: {
       type: [Object],
