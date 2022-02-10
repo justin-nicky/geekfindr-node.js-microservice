@@ -15,6 +15,8 @@ import { deletePostRouter } from './routes/deletePost'
 import { getMyFeedRouter } from './routes/getMyFeed'
 import { addCommentRouter } from './routes/addComment'
 import { getCommentsRouter } from './routes/getComments'
+import { addLikeRouter } from './routes/addLike'
+import { getLikesRouter } from './routes/getLikes'
 
 const app = express()
 app.use(cors())
@@ -35,6 +37,8 @@ app.use(deletePostRouter)
 app.use(getMyFeedRouter)
 app.use(addCommentRouter)
 app.use(getCommentsRouter)
+app.use(addLikeRouter)
+app.use(getLikesRouter)
 
 app.all('*', () => {
   throw new NotFoundError()

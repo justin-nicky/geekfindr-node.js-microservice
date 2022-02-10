@@ -1,11 +1,10 @@
-import express, { Request, Response } from 'express'
 import {
   BadRequestError,
   protectRoute,
   validateRequest,
 } from '@geekfindr/common'
+import express, { Request, Response } from 'express'
 import { param } from 'express-validator'
-
 import { Post } from '../models/post'
 
 const router = express.Router()
@@ -15,20 +14,25 @@ const requestBodyValiatiorMiddlewares = [
   validateRequest,
 ]
 
-router.get(
-  '/api/v1/posts/:id/comments',
+router.post(
+  '/api/v1/posts/:id/likes',
   protectRoute,
   requestBodyValiatiorMiddlewares,
   async (req: Request, res: Response) => {
     const id = req.params.id
     const post = await Post.findById(id)
-      .select('-comments._id')
-      .populate('comments.owner', 'username avatar')
     if (!post) {
       throw new BadRequestError('Invalid id.')
     }
-    res.json(post.comments)
+
+    if (post.likes.find((like) => like.owner.toString() === req.user.id)) {
+      throw new BadRequestError('Alredy liked this post.')
+    }
+    post.likeCount++
+    post.likes.push({ owner: req.user.id })
+    await post.save()
+    res.json({})
   }
 )
 
-export { router as getCommentsRouter }
+export { router as addLikeRouter }
