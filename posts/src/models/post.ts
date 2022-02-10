@@ -5,6 +5,11 @@ export enum MediaTypes {
   video = 'video',
 }
 
+interface Likes {
+  owner: string
+  _id?: string
+}
+
 // An interface that describes the properties
 // that are requried to create a new Post
 interface PostAttrs {
@@ -31,7 +36,7 @@ export interface PostDoc extends mongoose.Document {
   mediaURL: string
   description: string
   likeCount: number
-  likes: string[]
+  likes: Likes[]
   commentCount: number
   comments: object[]
   teamJoinRequests?: object[]
