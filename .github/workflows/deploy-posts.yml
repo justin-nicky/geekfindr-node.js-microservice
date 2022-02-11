@@ -1,4 +1,4 @@
-name: deploy-profiles
+name: deploy-posts
 
 on:
   push:
