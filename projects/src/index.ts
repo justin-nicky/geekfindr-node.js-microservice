@@ -18,6 +18,7 @@ app.use(morgan('tiny'))
 app.get('/api/v1/projects', (req, res) => {
   res.send('Hello World!!')
 })
+
 app.all('*', () => {
   throw new NotFoundError()
 })
