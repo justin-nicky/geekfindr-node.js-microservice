@@ -48,9 +48,7 @@ router.get(
     const feed = await Post.find({
       _id: { $in: postMongooseIds },
       isDeleted: false,
-    })
-      .select('-comments -likes -teamJoinRequests')
-      .populate('owner', 'username avatar')
+    }).populate('owner', 'username avatar')
     res.json(feed)
   }
 )
