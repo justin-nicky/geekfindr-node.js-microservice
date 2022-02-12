@@ -21,7 +21,6 @@ router.get(
       owner: id,
       isDeleted: false,
     })
-      .select('-comments -likes -teamJoinRequests')
       .populate('owner', 'username avatar')
       .sort({ createdAt: -1 })
     res.json(posts)
