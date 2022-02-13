@@ -37,18 +37,20 @@ router.get(
       if (!user?.feed?.includes(lastId)) {
         throw new BadRequestError('Invalid lastId.')
       }
-      postIds = user.feed.slice(user.feed.indexOf(lastId) + 1, limit + 1)
+      postIds = user.feed.slice(user.feed.indexOf(lastId) + 1, limit)
     }
     // handling the situation where last id is not provided
     else {
-      postIds = user?.feed?.slice(0, limit + 1) ?? []
+      postIds = user?.feed?.slice(0, limit) ?? []
     }
+    console.log(postIds)
     const postMongooseIds =
-      user?.feed?.map((post) => new mongoose.Types.ObjectId(post)) ?? []
+      postIds.map((post) => new mongoose.Types.ObjectId(post)) ?? []
     const feed = await Post.find({
       _id: { $in: postMongooseIds },
       isDeleted: false,
     })
+      .sort({ createdAt: -1 })
       .select('-likes._id -comments._id -teamJoinRequests._id')
       .populate('owner', 'username avatar')
     res.json(feed)
