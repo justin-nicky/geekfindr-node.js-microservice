@@ -41,3 +41,11 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: justinnicky/chats
+      context: chats
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
