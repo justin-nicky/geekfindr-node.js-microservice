@@ -30,7 +30,6 @@ app.get('/api/v1/posts', (req, res) => {
   res.send('Hello World')
 })
 app.use(getSignedURLRouter)
-
 app.use(addPostRouter)
 app.use(getMyPostsRouter)
 app.use(getPostsByUsersRouter)
