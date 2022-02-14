@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chats-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chats
+  template:
+    metadata:
+      labels:
+        app: chats
+    spec:
+      containers:
+        - name: chats
+          image: justinnicky/chats
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_SECRET
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-url
+                  key: MONGO_URL
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-access-key-id
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret-access-key
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: S3_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: s3-base-url
+                  key: S3_BASE_URL
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chats-srv
+spec:
+  selector:
+    app: chats
+  ports:
+    - name: chats
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
