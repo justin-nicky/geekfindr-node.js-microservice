@@ -41,18 +41,8 @@ router.get(
       {
         $project: {
           id: '$_id',
-          email: 1,
           username: 1,
           avatar: 1,
-          bio: 1,
-          organizations: 1,
-          followersCount: 1,
-          followingCount: 1,
-          experience: 1,
-          education: 1,
-          works: 1,
-          skills: 1,
-          socials: 1,
           role: 1,
         },
       },
