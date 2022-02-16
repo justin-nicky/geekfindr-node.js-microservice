@@ -22,10 +22,10 @@ interface Todo {
 // An interface that describes the properties
 // that are requried to create a new Project
 interface ProjectAttrs {
-  description: string
   name: string
   owner: mongoose.Types.ObjectId
   team?: Team[]
+  id?: mongoose.Types.ObjectId
 }
 
 // An interface that describes the properties
@@ -145,7 +145,9 @@ const projectSchema = new mongoose.Schema(
 )
 
 projectSchema.statics.build = (attrs: ProjectAttrs) => {
-  return new Project(attrs)
+  const _id = attrs.id
+  delete attrs.id
+  return new Project({ ...attrs, _id })
 }
 const Project = mongoose.model<ProjectDoc, ProjectModel>(
   'Project',

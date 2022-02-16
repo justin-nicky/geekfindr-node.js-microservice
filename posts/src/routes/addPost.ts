@@ -9,6 +9,8 @@ import mongoose from 'mongoose'
 
 import { Post } from '../models/post'
 import { User } from '../models/user'
+import { ProjectCreatedPublisher } from '../events/publishers/projectCreatedPublisher'
+import { natsWrapper } from '../natsWrapper'
 
 const router = express.Router()
 
@@ -43,6 +45,17 @@ const requestBodyValiatiorMiddlewares = [
     .bail()
     .isBoolean()
     .withMessage('Invalid isOrganization flag.'),
+  body('projectName')
+    .custom((value, { req }) => {
+      if (req.body.isProject) {
+        return value !== undefined
+      }
+      return true
+    })
+    .withMessage('Project name is required.')
+    .bail()
+    .isString()
+    .withMessage('Invalid project name.'),
   validateRequest,
 ]
 
@@ -72,6 +85,15 @@ router.post(
       isOrganization,
       owner: req.user.id,
     }).save()
+
+    // Publish project-created event
+    if (isProject) {
+      new ProjectCreatedPublisher(natsWrapper.client).publish({
+        id: post._id as string,
+        name: req.body.projectName as string,
+        owner: req.user.id,
+      })
+    }
 
     //save post to the follower's feed
     const user = await User.findById(req.user.id)
