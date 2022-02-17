@@ -1,5 +1,13 @@
 import mongoose from 'mongoose'
 
+import { MemberTypes } from './memberTypes'
+
+// An interface describing the project properties
+interface Project {
+  project: mongoose.Types.ObjectId
+  role: string
+}
+
 // An interface that describes the properties
 // that are requried to create a new User
 interface UserAttrs {
@@ -19,7 +27,21 @@ interface UserModel extends mongoose.Model<UserDoc> {
 export interface UserDoc extends mongoose.Document {
   username: string
   avatar?: string
+  projects: Project[]
 }
+
+const projectSchema = new mongoose.Schema({
+  project: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Project',
+    required: true,
+  },
+  role: {
+    type: String,
+    required: true,
+    enum: MemberTypes,
+  },
+})
 
 const userSchema = new mongoose.Schema(
   {
@@ -29,6 +51,10 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
+    },
+    projects: {
+      type: [projectSchema],
+      default: [],
     },
   },
   {

@@ -7,6 +7,9 @@ import morgan from 'morgan'
 import { connectDB } from './config/db'
 import { connectEventBus } from './config/eventBus'
 import { natsWrapper } from './natsWrapper'
+import { getMyProjectsRouter } from './routes/getMyProjects'
+import { updateDescriptionRouter } from './routes/updateDescription'
+import { getProjectNamesRouter } from './routes/getProjectNames'
 
 const app = express()
 app.use(cors())
@@ -18,6 +21,10 @@ app.use(morgan('tiny'))
 app.get('/api/v1/projects', (req, res) => {
   res.send('Hello World!!')
 })
+
+app.use(getMyProjectsRouter)
+app.use(updateDescriptionRouter)
+app.use(getProjectNamesRouter)
 
 app.all('*', () => {
   throw new NotFoundError()

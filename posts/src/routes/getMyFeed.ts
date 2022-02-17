@@ -38,11 +38,11 @@ router.get(
         throw new BadRequestError('Invalid lastId.')
       }
       let newPosition = user.feed.indexOf(lastId) + 1
-      postIds = user.feed.slice(newPosition, newPosition + limit)
+      postIds = user.feed.slice(newPosition)
     }
     // handling the situation where last id is not provided
     else {
-      postIds = user?.feed?.slice(0, limit) ?? []
+      postIds = user?.feed ?? []
     }
     const postMongooseIds =
       postIds.map((post) => new mongoose.Types.ObjectId(post)) ?? []
@@ -50,6 +50,7 @@ router.get(
       _id: { $in: postMongooseIds },
       isDeleted: false,
     })
+      .limit(limit)
       .sort({ createdAt: -1 })
       .select('-likes._id -comments._id -teamJoinRequests._id')
       .populate('owner', 'username avatar')
