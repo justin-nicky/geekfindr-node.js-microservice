@@ -1,22 +1,22 @@
 import express, { Request, Response } from 'express'
 import { protectRoute } from '@geekfindr/common'
 
-import { Post } from '../models/post'
+import { Project } from '../models/project'
 
 const router = express.Router()
 
 router.get(
-  '/api/v1/posts/projectNames',
+  '/api/v1/projects/projectNames',
   protectRoute,
   async (req: Request, res: Response) => {
-    const projectNames = await Post.aggregate([
+    const projectNames = await Project.aggregate([
       {
-        $match: { isProject: true },
+        $match: {},
       },
       {
         $group: {
           _id: null,
-          projectNames: { $push: '$projectName' },
+          projectNames: { $push: '$name' },
         },
       },
       {
@@ -26,7 +26,7 @@ router.get(
         },
       },
     ])
-    res.json(projectNames)
+    res.json(projectNames[0]?.projectNames ?? [])
   }
 )
 
