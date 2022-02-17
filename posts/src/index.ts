@@ -18,6 +18,7 @@ import { getCommentsRouter } from './routes/getComments'
 import { addLikeRouter } from './routes/addLike'
 import { getLikesRouter } from './routes/getLikes'
 import { getPostsByUsersRouter } from './routes/getPostByUsers'
+import { getProjectNamesRouter } from './routes/getProjectNames'
 
 const app = express()
 app.use(cors())
@@ -40,6 +41,7 @@ app.use(addCommentRouter)
 app.use(getCommentsRouter)
 app.use(addLikeRouter)
 app.use(getLikesRouter)
+app.use(getProjectNamesRouter)
 
 app.all('*', () => {
   throw new NotFoundError()

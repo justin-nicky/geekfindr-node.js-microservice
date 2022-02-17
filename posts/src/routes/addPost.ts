@@ -46,6 +46,7 @@ const requestBodyValiatiorMiddlewares = [
     .isBoolean()
     .withMessage('Invalid isOrganization flag.'),
   body('projectName')
+    .optional()
     .custom((value, { req }) => {
       if (req.body.isProject) {
         return value !== undefined
@@ -64,12 +65,27 @@ router.post(
   protectRoute,
   requestBodyValiatiorMiddlewares,
   async (req: Request, res: Response) => {
-    const { mediaType, isProject, mediaURL, description, isOrganization } =
-      req.body
+    const {
+      mediaType,
+      isProject,
+      mediaURL,
+      description,
+      isOrganization,
+      projectName,
+    } = req.body
+
+    if (isProject && !projectName) {
+      throw new BadRequestError('Project name is required.')
+    }
+    if (isProject && (await Post.findOne({ projectName }))) {
+      throw new BadRequestError('Project name already exists.')
+    }
+
     const existingPost = await Post.findOne({
       owner: req.user.id,
       mediaType,
       isProject,
+      projectName,
       mediaURL,
       description,
       isOrganization,
@@ -80,6 +96,7 @@ router.post(
     const post = await Post.build({
       mediaType,
       isProject,
+      projectName,
       mediaURL,
       description,
       isOrganization,
@@ -90,10 +107,11 @@ router.post(
     if (isProject) {
       new ProjectCreatedPublisher(natsWrapper.client).publish({
         id: post._id as string,
-        name: req.body.projectName as string,
+        name: projectName as string,
         owner: req.user.id,
       })
     }
+    res.json(post)
 
     //save post to the follower's feed
     const user = await User.findById(req.user.id)
@@ -103,10 +121,8 @@ router.post(
     )
     await User.updateMany(
       { _id: { $in: followersIds } },
-      { $push: { feed: { $each: [post._id], $position: 0 } } }
+      { $push: { feed: { $each: [post._id], $position: 0, $slice: 200 } } }
     )
-
-    res.json(post)
   }
 )
 

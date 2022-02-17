@@ -37,7 +37,7 @@ interface ProjectModel extends mongoose.Model<ProjectDoc> {
 // An interface that describes the properties
 // that a Project Document has
 export interface ProjectDoc extends mongoose.Document {
-  description: string
+  description?: string
   name: string
   owner: mongoose.Types.ObjectId
   team?: Team[]

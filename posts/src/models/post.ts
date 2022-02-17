@@ -5,7 +5,12 @@ export enum MediaTypes {
   video = 'video',
 }
 
-interface Likes {
+interface Like {
+  owner: string
+  _id?: string
+}
+
+interface TeamJoinRequest {
   owner: string
   _id?: string
 }
@@ -14,6 +19,7 @@ interface Likes {
 // that are requried to create a new Post
 interface PostAttrs {
   isProject: boolean
+  projectName?: string
   mediaType: MediaTypes
   mediaURL: string
   description: string
@@ -32,15 +38,16 @@ interface PostModel extends mongoose.Model<PostDoc> {
 // that a Post Document has
 export interface PostDoc extends mongoose.Document {
   isProject: boolean
+  projectName?: string
   mediaType: MediaTypes
   mediaURL: string
   description: string
   likeCount: number
-  likes: Likes[]
+  likes: Like[]
   commentCount: number
   comments: object[]
   teamJoinRequestCount: number
-  teamJoinRequests?: object[]
+  teamJoinRequests: TeamJoinRequest[]
   isOrganization: boolean
   owner: string
   isDeleted: boolean
@@ -66,6 +73,14 @@ const likeSchema = new mongoose.Schema({
   },
 })
 
+const teamJoinRequestSchema = new mongoose.Schema({
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+})
+
 const postSchema = new mongoose.Schema(
   {
     mediaType: {
@@ -81,6 +96,11 @@ const postSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
       default: false,
+    },
+    projectName: {
+      type: String,
+      required: false,
+      unique: true,
     },
     mediaURL: {
       type: String,
@@ -115,7 +135,7 @@ const postSchema = new mongoose.Schema(
       default: 0,
     },
     teamJoinRequests: {
-      type: [Object],
+      type: [teamJoinRequestSchema],
       default: [],
     },
     isOrganization: {
