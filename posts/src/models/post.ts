@@ -100,7 +100,6 @@ const postSchema = new mongoose.Schema(
     projectName: {
       type: String,
       required: false,
-      unique: true,
     },
     mediaURL: {
       type: String,
