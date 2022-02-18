@@ -93,15 +93,27 @@ router.post(
     if (existingPost) {
       throw new BadRequestError('Cannot have duplicate posts.')
     }
-    const post = await Post.build({
-      mediaType,
-      isProject,
-      projectName,
-      mediaURL,
-      description,
-      isOrganization,
-      owner: req.user.id,
-    }).save()
+    let post
+    if (isProject) {
+      post = await Post.build({
+        mediaType,
+        isProject,
+        projectName,
+        mediaURL,
+        description,
+        isOrganization,
+        owner: req.user.id,
+      }).save()
+    } else {
+      post = await Post.build({
+        mediaType,
+        isProject,
+        mediaURL,
+        description,
+        isOrganization,
+        owner: req.user.id,
+      }).save()
+    }
 
     // Publish project-created event
     if (isProject) {
