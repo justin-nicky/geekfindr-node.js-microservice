@@ -17,7 +17,12 @@ export class ProjectCreatedListener extends Listener<ProjectCreatedEvent> {
       name: string
       owner: mongoose.Types.ObjectId
     }
-    const project = Project.build({ id, name, owner })
+    const project = Project.build({
+      id,
+      name,
+      owner,
+      team: [{ user: owner, role: MemberTypes.Owner }],
+    })
     await project.save()
     const user = await User.findById(owner)
     user?.projects.push({ project: id, role: MemberTypes.Owner })
