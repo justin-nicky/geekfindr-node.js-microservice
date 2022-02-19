@@ -9,7 +9,9 @@ router.get(
   '/api/v1/projects/my-projects',
   protectRoute,
   async (req: Request, res: Response) => {
-    const projects = await User.findById(req.user.id).select('projects')
+    const projects = await User.findById(req.user.id)
+      .populate('projects.project', 'name')
+      .select('-projects._id')
     res.json(projects?.projects)
   }
 )
