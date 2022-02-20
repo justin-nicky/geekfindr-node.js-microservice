@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 import { MemberTypes } from './memberTypes'
 
 // An interface describing the project properties
-interface Project {
+export interface Project {
   project: mongoose.Types.ObjectId
   role: string
 }

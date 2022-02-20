@@ -1,23 +1,24 @@
 import express, { Request, Response } from 'express'
 import {
   BadRequestError,
+  NotAuthorizedError,
   protectRoute,
   validateRequest,
 } from '@geekfindr/common'
-import { param, body } from 'express-validator'
+import { param } from 'express-validator'
 
 import { Project } from '../models/project'
+import { MemberTypes } from '../models/memberTypes'
 
 const router = express.Router()
 
 const requestBodyValidatorMiddlewares = [
   param('projectId').isMongoId().withMessage('Invalid project id'),
-  body('description').notEmpty().withMessage('Description is required'),
   validateRequest,
 ]
 
-router.put(
-  '/api/v1/projects/:projectId/description',
+router.get(
+  '/api/v1/projects/:projectId',
   protectRoute,
   requestBodyValidatorMiddlewares,
   async (req: Request, res: Response) => {
@@ -25,10 +26,19 @@ router.put(
     if (!project) {
       throw new BadRequestError('Project not found')
     }
-    project.description = req.body.description
-    await project.save()
+    // Checking if the user is a member of the project
+    if (
+      !!project.team?.find((member) => {
+        return (
+          member.user.toString() === req.user!.id &&
+          member.role !== MemberTypes.JoinRequest
+        )
+      })
+    ) {
+      throw new NotAuthorizedError()
+    }
     res.send(project)
   }
 )
 
-export { router as updateDescriptionRouter }
+export { router as getProjectRouter }
