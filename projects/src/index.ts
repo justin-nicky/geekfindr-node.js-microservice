@@ -10,6 +10,8 @@ import { natsWrapper } from './natsWrapper'
 import { getMyProjectsRouter } from './routes/getMyProjects'
 import { updateDescriptionRouter } from './routes/updateDescription'
 import { getProjectNamesRouter } from './routes/getProjectNames'
+import { getProjectRouter } from './routes/getProject'
+import { updateMemberRouter } from './routes/updateMember'
 
 const app = express()
 app.use(cors())
@@ -25,6 +27,8 @@ app.get('/api/v1/projects', (req, res) => {
 app.use(getMyProjectsRouter)
 app.use(updateDescriptionRouter)
 app.use(getProjectNamesRouter)
+app.use(getProjectRouter)
+app.use(updateMemberRouter)
 
 app.all('*', () => {
   throw new NotFoundError()
