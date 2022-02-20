@@ -5,33 +5,23 @@ import {
   protectRoute,
   validateRequest,
 } from '@geekfindr/common'
-import { param, body } from 'express-validator'
+import { param } from 'express-validator'
 
 import { Project } from '../models/project'
-import { MemberTypes } from '../models/memberTypes'
 import { User } from '../models/user'
 import { protectProject } from '../middlewares/protectProject'
 import { hasHigerRank } from '../helpers/compareRanks'
-import mongoose from 'mongoose'
 
 const router = express.Router()
 
 const requestBodyValidatorMiddlewares = [
-  param('projectId').isMongoId().withMessage('Invalid Id'),
-  param('memberId').isMongoId().withMessage('Invalid Member Id'),
-  body('role')
-    .notEmpty()
-    .withMessage('Role is required')
-    .bail()
-    .custom((val) =>
-      [MemberTypes.Admin, MemberTypes.Collaborator].includes(val)
-    )
-    .withMessage('Invalid Role'),
+  param('projectId').isMongoId().withMessage('Invalid id'),
+  param('memberId').isMongoId().withMessage('Invalid member id'),
   validateRequest,
 ]
 
-router.put(
-  '/api/v1/projects/:projectId/team/:memberId/role',
+router.delete(
+  '/api/v1/projects/:projectId/team/:memberId',
   protectRoute,
   requestBodyValidatorMiddlewares,
   protectProject,
@@ -57,36 +47,23 @@ router.put(
       throw new BadRequestError('Member not found')
     }
     // checking if the current user has a higher rank than the other user
-    // and if the role is not higher than or equal to the current user's role.
+    // and if both the uesrs are same(leave project functionality)
     if (
-      hasHigerRank(currentUser!.role, otherUser.role) &&
-      hasHigerRank(currentUser!.role, req.body.role)
+      hasHigerRank(currentUser!.role, otherUser.role) ||
+      req.params.memberId === req.user!.id
     ) {
-      project.team = project?.team?.map((member) => {
-        if (member.user.toString() === req.params.memberId) {
-          member.role = req.body.role
-        }
-        return member
-      })
+      project.team = project?.team?.filter(
+        (member) => member.user.toString() !== req.params.memberId
+      )
+      user.projects = user?.projects?.filter(
+        (project) => project.project.toString() !== req.params.projectId
+      )
     } else {
       throw new ForbiddenOperationError()
     }
-    // updating the user and the project
-    if (otherUser.role !== MemberTypes.JoinRequest) {
-      user.projects.map((project) => {
-        if (project.project.toString() === req.params.projectId) {
-          project.role = req.body.role
-        }
-      })
-    } else {
-      user.projects.push({
-        project: req.params.projectId as unknown as mongoose.Types.ObjectId,
-        role: req.body.role,
-      })
-    }
     await Promise.all([project.save(), user.save()])
-    res.send(project)
+    res.json({})
   }
 )
 
-export { router as updateMemberRouter }
+export { router as deleteMemberRouter }
