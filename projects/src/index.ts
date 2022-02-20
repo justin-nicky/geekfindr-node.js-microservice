@@ -12,6 +12,7 @@ import { updateDescriptionRouter } from './routes/updateDescription'
 import { getProjectNamesRouter } from './routes/getProjectNames'
 import { getProjectRouter } from './routes/getProject'
 import { updateMemberRouter } from './routes/updateMember'
+import { deleteMemberRouter } from './routes/deleteMember'
 
 const app = express()
 app.use(cors())
@@ -29,6 +30,7 @@ app.use(updateDescriptionRouter)
 app.use(getProjectNamesRouter)
 app.use(getProjectRouter)
 app.use(updateMemberRouter)
+app.use(deleteMemberRouter)
 
 app.all('*', () => {
   throw new NotFoundError()

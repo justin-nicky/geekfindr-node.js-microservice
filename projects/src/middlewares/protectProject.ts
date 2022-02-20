@@ -1,4 +1,4 @@
-import { NotAuthorizedError } from '@geekfindr/common'
+import { ForbiddenOperationError } from '@geekfindr/common'
 import { Request, Response, NextFunction } from 'express'
 import { UserPayload } from '@geekfindr/common'
 
@@ -29,7 +29,7 @@ export const protectProject = async (
       _project.project.toString() === req.params.projectId.toString()
   )
   if (!project) {
-    throw new NotAuthorizedError()
+    throw new ForbiddenOperationError()
   }
   req.projects = user?.projects as unknown as ProjectsPayload
   next()
