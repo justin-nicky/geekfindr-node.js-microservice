@@ -22,7 +22,7 @@ const requestBodyValidatorMiddlewares = [
     .notEmpty()
     .withMessage('Role is required')
     .bail()
-    .custom((val) => Object.keys(MemberTypes).includes(val))
+    .custom((val) => Object.values(MemberTypes).includes(val))
     .withMessage('Invalid Role'),
   validateRequest,
 ]
