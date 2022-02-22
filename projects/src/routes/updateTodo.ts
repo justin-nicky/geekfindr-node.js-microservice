@@ -1,44 +1,36 @@
 import express, { Request, Response } from 'express'
 import {
-  BadRequestError,
   protectRoute,
   validateRequest,
+  BadRequestError,
 } from '@geekfindr/common'
-import { param } from 'express-validator'
+import { body, param } from 'express-validator'
 
-import { Project } from '../models/project'
 import { protectProject } from '../middlewares/protectProject'
-
-const router = express.Router()
+import { Project } from '../models/project'
 
 const requestBodyValidatorMiddlewares = [
+  body('todo').isArray().withMessage('Invalid todo'),
   param('projectId').isMongoId().withMessage('Invalid project id'),
   validateRequest,
 ]
 
-router.get(
-  '/api/v1/projects/:projectId',
+const router = express.Router()
+
+router.put(
+  '/api/v1/projects/:projectId/todo',
   protectRoute,
   requestBodyValidatorMiddlewares,
   protectProject,
   async (req: Request, res: Response) => {
     const project = await Project.findById(req.params.projectId)
-      .populate([
-        {
-          path: 'owner',
-          select: 'username avatar',
-        },
-        {
-          path: 'team.user',
-          select: 'username avatar',
-        },
-      ])
-      .select('-team._id -task._id -todo._id')
     if (!project) {
       throw new BadRequestError('Project not found')
     }
+    project.todo = req.body.todo
+    await project.save()
     res.send(project)
   }
 )
 
-export { router as getProjectRouter }
+export { router as updateTodoRouter }
