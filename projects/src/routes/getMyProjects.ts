@@ -10,7 +10,11 @@ router.get(
   protectRoute,
   async (req: Request, res: Response) => {
     const projects = await User.findById(req.user.id)
-      .populate('projects.project', 'name')
+      .populate({
+        path: 'projects.project',
+        select: 'name description owner',
+        populate: { path: 'owner', select: 'username avatar' },
+      })
       .select('-projects._id')
     res.json(projects?.projects)
   }
