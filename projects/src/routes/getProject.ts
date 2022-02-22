@@ -9,6 +9,7 @@ import { param } from 'express-validator'
 
 import { Project } from '../models/project'
 import { MemberTypes } from '../models/memberTypes'
+import { protectProject } from '../middlewares/protectProject'
 
 const router = express.Router()
 
@@ -21,21 +22,11 @@ router.get(
   '/api/v1/projects/:projectId',
   protectRoute,
   requestBodyValidatorMiddlewares,
+  protectProject,
   async (req: Request, res: Response) => {
     const project = await Project.findById(req.params.projectId)
     if (!project) {
       throw new BadRequestError('Project not found')
-    }
-    // Checking if the user is a member of the project
-    if (
-      !!project.team?.find((member) => {
-        return (
-          member.user.toString() === req.user!.id &&
-          member.role !== MemberTypes.JoinRequest
-        )
-      })
-    ) {
-      throw new NotAuthorizedError()
     }
     res.send(project)
   }
