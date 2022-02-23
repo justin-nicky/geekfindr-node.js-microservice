@@ -70,6 +70,12 @@ const todoSchema = new mongoose.Schema({
   },
 })
 
+const todosSchema = new mongoose.Schema({
+  todo: {
+    type: [todoSchema],
+  },
+})
+
 const taskSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -153,4 +159,6 @@ const Project = mongoose.model<ProjectDoc, ProjectModel>(
   projectSchema
 )
 
-export { Project }
+const Todos = mongoose.model('Todos', todosSchema)
+
+export { Project, Todos }

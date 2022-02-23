@@ -27,12 +27,8 @@ router.delete(
   protectProject,
   async (req: Request, res: Response) => {
     // fetching the project and the user
-    const findProjectQuery = Project.findById(req.params.projectId)
-    const findUserQuery = User.findById(req.params.memberId)
-    const [project, user] = await Promise.all([findProjectQuery, findUserQuery])
-    if (!project) {
-      throw new BadRequestError('Project not found')
-    }
+    const project = req.project
+    const user = await User.findById(req.params.memberId)
     if (!user) {
       throw new BadRequestError('User not found')
     }
