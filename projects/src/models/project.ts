@@ -70,12 +70,6 @@ const todoSchema = new mongoose.Schema({
   },
 })
 
-const todosSchema = new mongoose.Schema({
-  todo: {
-    type: [todoSchema],
-  },
-})
-
 const taskSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -132,7 +126,6 @@ const projectSchema = new mongoose.Schema(
     },
     isDeleted: {
       type: Boolean,
-      required: true,
       default: false,
     },
   },
@@ -159,6 +152,4 @@ const Project = mongoose.model<ProjectDoc, ProjectModel>(
   projectSchema
 )
 
-const Todos = mongoose.model('Todos', todosSchema)
-
-export { Project, Todos }
+export { Project }

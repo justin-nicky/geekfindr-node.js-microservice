@@ -14,6 +14,7 @@ import { getProjectRouter } from './routes/getProject'
 import { updateMemberRouter } from './routes/updateMember'
 import { deleteMemberRouter } from './routes/deleteMember'
 import { updateTodoRouter } from './routes/updateTodo'
+import { addTaskRouter } from './routes/addTask'
 
 const app = express()
 app.use(cors())
@@ -33,6 +34,7 @@ app.use(getProjectRouter)
 app.use(updateMemberRouter)
 app.use(deleteMemberRouter)
 app.use(updateTodoRouter)
+app.use(addTaskRouter)
 
 app.all('*', () => {
   throw new NotFoundError()
@@ -51,6 +53,7 @@ const start = async () => {
   }
   connectDB()
   connectEventBus()
+
   //close the connection to the event bus when the server stops
   natsWrapper.client.on('close', () => {
     console.log('NATS connection closed!')

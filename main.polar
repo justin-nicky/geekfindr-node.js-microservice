@@ -17,6 +17,8 @@ resource Project {
 
 # This rule tells Oso how to fetch roles for a user
 has_role(actor: User, role_name: String, project: Project) if
-  role in actor.roles and
-  role_name = role.name and
-  repository = role.repository;
+  # role = actor.role and
+  # role_name = role.name and
+  # repository = role.repository;
+  true;
+
