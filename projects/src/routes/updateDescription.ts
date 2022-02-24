@@ -7,6 +7,7 @@ import {
 import { param, body } from 'express-validator'
 
 import { Project } from '../models/project'
+import { protectProject } from '../middlewares/protectProject'
 
 const router = express.Router()
 
@@ -20,11 +21,9 @@ router.put(
   '/api/v1/projects/:projectId/description',
   protectRoute,
   requestBodyValidatorMiddlewares,
+  protectProject,
   async (req: Request, res: Response) => {
-    const project = await Project.findById(req.params.projectId)
-    if (!project) {
-      throw new BadRequestError('Project not found')
-    }
+    const project = req.project
     project.description = req.body.description
     await project.save()
     res.send(project)

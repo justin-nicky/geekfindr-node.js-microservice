@@ -126,7 +126,6 @@ const projectSchema = new mongoose.Schema(
     },
     isDeleted: {
       type: Boolean,
-      required: true,
       default: false,
     },
   },
