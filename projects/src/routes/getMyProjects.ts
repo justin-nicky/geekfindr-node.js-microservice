@@ -12,6 +12,7 @@ router.get(
     const projects = await User.findById(req.user.id)
       .populate({
         path: 'projects.project',
+        match: { isDeleted: false },
         select: 'name description owner',
         populate: { path: 'owner', select: 'username avatar' },
       })

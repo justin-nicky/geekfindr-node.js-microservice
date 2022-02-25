@@ -22,7 +22,10 @@ router.get(
   requestBodyValidatorMiddlewares,
   protectProject,
   async (req: Request, res: Response) => {
-    const project = await Project.findById(req.params.projectId)
+    const project = await Project.findOne({
+      id: req.params.projectId,
+      isDeleted: false,
+    })
       .populate([
         {
           path: 'owner',
