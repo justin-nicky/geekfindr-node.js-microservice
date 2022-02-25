@@ -35,6 +35,10 @@ router.post(
     ) {
       throw new BadRequestError('Alredy requested.')
     }
+    const isOwner = post.owner.toString() === req.user.id
+    if (isOwner) {
+      throw new BadRequestError('Cannot request to join your own post.')
+    }
     post.teamJoinRequestCount++
     post.teamJoinRequests.push({ owner: req.user.id })
     await post.save()

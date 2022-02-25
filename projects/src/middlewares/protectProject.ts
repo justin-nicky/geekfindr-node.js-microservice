@@ -20,7 +20,7 @@ export const protectProject = async (
   const userQuery = User.findById(req.user!.id)
   const projectQuery = Project.findById(req.params.projectId)
   const [user, project] = await Promise.all([userQuery, projectQuery])
-  if (!project) {
+  if (!project || project.isDeleted) {
     throw new BadRequestError('Project not found')
   }
 
