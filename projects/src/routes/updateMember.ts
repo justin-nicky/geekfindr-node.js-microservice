@@ -7,7 +7,6 @@ import {
 } from '@geekfindr/common'
 import { param, body } from 'express-validator'
 
-import { Project } from '../models/project'
 import { MemberTypes } from '../models/memberTypes'
 import { User } from '../models/user'
 import { protectProject } from '../middlewares/protectProject'
@@ -68,15 +67,15 @@ router.put(
       throw new ForbiddenOperationError()
     }
     // updating the user and the project
-    if (otherUser.role !== MemberTypes.JoinRequest) {
-      user.projects.map((project) => {
-        if (project.project.toString() === req.params.projectId) {
-          project.role = req.body.role
-        }
-      })
+    // check if the user already has a role in the project
+    const userProject = user.projects.find(
+      (_project) => _project.project.toString() === req.params.projectId
+    )
+    if (userProject) {
+      userProject.role = req.body.role
     } else {
       user.projects.push({
-        project: req.params.projectId as unknown as mongoose.Types.ObjectId,
+        project: new mongoose.Types.ObjectId(req.params.projectId),
         role: req.body.role,
       })
     }
