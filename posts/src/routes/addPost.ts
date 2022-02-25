@@ -86,7 +86,6 @@ router.post(
       mediaType,
       isProject,
       projectName,
-      mediaURL,
       description,
       isOrganization,
     })

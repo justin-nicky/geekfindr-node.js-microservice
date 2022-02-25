@@ -12,6 +12,7 @@ interface Task {
   description: string
   users: mongoose.Types.ObjectId[]
   isComplete: boolean
+  assignor: mongoose.Types.ObjectId
 }
 
 interface Todo {
@@ -93,6 +94,11 @@ const taskSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false,
+  },
+  assignor: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
 })
 
