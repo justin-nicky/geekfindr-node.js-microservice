@@ -92,6 +92,7 @@ router.post(
       description,
       users,
       isComplete: false,
+      assignor: new mongoose.Types.ObjectId(user.id),
     })
     await project.save()
     res.send({})

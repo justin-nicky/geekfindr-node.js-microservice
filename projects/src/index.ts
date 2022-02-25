@@ -15,6 +15,8 @@ import { updateMemberRouter } from './routes/updateMember'
 import { deleteMemberRouter } from './routes/deleteMember'
 import { updateTodoRouter } from './routes/updateTodo'
 import { addTaskRouter } from './routes/addTask'
+import { markTaskAsCompletedRouter } from './routes/markTaskAsCompleted'
+import { deleteTaskRouter } from './routes/deleteTask'
 
 const app = express()
 app.use(cors())
@@ -35,6 +37,8 @@ app.use(updateMemberRouter)
 app.use(deleteMemberRouter)
 app.use(updateTodoRouter)
 app.use(addTaskRouter)
+app.use(markTaskAsCompletedRouter)
+app.use(deleteTaskRouter)
 
 app.all('*', () => {
   throw new NotFoundError()
