@@ -17,6 +17,7 @@ import { updateTodoRouter } from './routes/updateTodo'
 import { addTaskRouter } from './routes/addTask'
 import { markTaskAsCompletedRouter } from './routes/markTaskAsCompleted'
 import { deleteTaskRouter } from './routes/deleteTask'
+import { deleteProjectRouter } from './routes/deleteProject'
 
 const app = express()
 app.use(cors())
@@ -29,16 +30,17 @@ app.get('/api/v1/projects', (req, res) => {
   res.send('Hello World!!')
 })
 
-app.use(getMyProjectsRouter)
-app.use(updateDescriptionRouter)
-app.use(getProjectNamesRouter)
-app.use(getProjectRouter)
-app.use(updateMemberRouter)
-app.use(deleteMemberRouter)
-app.use(updateTodoRouter)
 app.use(addTaskRouter)
-app.use(markTaskAsCompletedRouter)
+app.use(deleteMemberRouter)
+app.use(deleteProjectRouter)
 app.use(deleteTaskRouter)
+app.use(getMyProjectsRouter)
+app.use(getProjectRouter)
+app.use(getProjectNamesRouter)
+app.use(markTaskAsCompletedRouter)
+app.use(updateDescriptionRouter)
+app.use(updateMemberRouter)
+app.use(updateTodoRouter)
 
 app.all('*', () => {
   throw new NotFoundError()

@@ -17,7 +17,10 @@ router.get(
         populate: { path: 'owner', select: 'username avatar' },
       })
       .select('-projects._id')
-    res.json(projects?.projects)
+    const projectsExcludingNull = projects?.projects?.filter(
+      (_project) => _project.project !== null
+    )
+    res.json(projectsExcludingNull)
   }
 )
 

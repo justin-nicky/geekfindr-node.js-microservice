@@ -1,5 +1,9 @@
 import express, { Request, Response } from 'express'
-import { protectRoute, validateRequest } from '@geekfindr/common'
+import {
+  ForbiddenOperationError,
+  protectRoute,
+  validateRequest,
+} from '@geekfindr/common'
 import { param } from 'express-validator'
 import { protectProject } from '../middlewares/protectProject'
 import { ProjectDeletedPublisher } from '../events/publishers/projectDeletedPublisher'
@@ -19,6 +23,9 @@ router.delete(
   protectProject,
   async (req: Request, res: Response) => {
     const project = req.project
+    if (project.owner.toString() !== req.user.id) {
+      throw new ForbiddenOperationError()
+    }
     project.isDeleted = true
     await project.save()
     // Publish project-deleted event
@@ -29,4 +36,4 @@ router.delete(
   }
 )
 
-export { router as deleteTaskRouter }
+export { router as deleteProjectRouter }

@@ -1,15 +1,8 @@
 import express, { request, Request, Response } from 'express'
-import {
-  protectRoute,
-  validateRequest,
-  BadRequestError,
-} from '@geekfindr/common'
+import { protectRoute, validateRequest } from '@geekfindr/common'
 import { body, param } from 'express-validator'
-import { Oso, NotFoundError as OsoNotFoundError } from 'oso'
 
 import { protectProject } from '../middlewares/protectProject'
-import { Project, ProjectDoc } from '../models/project'
-import { User } from '../models/user'
 
 const requestBodyValidatorMiddlewares = [
   body('todo')
