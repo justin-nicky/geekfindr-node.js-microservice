@@ -23,7 +23,7 @@ router.get(
   protectProject,
   async (req: Request, res: Response) => {
     const project = await Project.findOne({
-      id: req.params.projectId,
+      _id: req.params.projectId,
       isDeleted: false,
     })
       .populate([
