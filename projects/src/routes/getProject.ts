@@ -37,9 +37,11 @@ router.get(
         },
       ])
       .select('-team._id -task._id -todo._id')
+
     if (!project) {
       throw new BadRequestError('Project not found')
     }
+
     res.send(project)
   }
 )

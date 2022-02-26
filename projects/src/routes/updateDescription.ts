@@ -1,12 +1,7 @@
 import express, { Request, Response } from 'express'
-import {
-  BadRequestError,
-  protectRoute,
-  validateRequest,
-} from '@geekfindr/common'
+import { protectRoute, validateRequest } from '@geekfindr/common'
 import { param, body } from 'express-validator'
 
-import { Project } from '../models/project'
 import { protectProject } from '../middlewares/protectProject'
 
 const router = express.Router()
@@ -24,8 +19,10 @@ router.put(
   protectProject,
   async (req: Request, res: Response) => {
     const project = req.project
+
     project.description = req.body.description
     await project.save()
+
     res.send(project)
   }
 )

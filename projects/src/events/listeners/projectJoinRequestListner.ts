@@ -11,10 +11,12 @@ export class ProjectJoinRequestListener extends Listener<ProjectJoinRequestEvent
 
   async onMessage(data: ProjectJoinRequestEvent['data'], msg: Message) {
     console.log('Project join-request event recieved', data)
+
     const { projectId, userId } = data as unknown as {
       projectId: mongoose.Types.ObjectId
       userId: mongoose.Types.ObjectId
     }
+
     const update = {
       $push: {
         team: {
@@ -24,6 +26,7 @@ export class ProjectJoinRequestListener extends Listener<ProjectJoinRequestEvent
       },
     }
     await Project.updateOne({ _id: projectId }, update)
+
     msg.ack()
   }
 }

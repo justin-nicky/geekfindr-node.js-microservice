@@ -9,9 +9,12 @@ export class UserCreatedListener extends Listener<UserCreatedEvent> {
 
   async onMessage(data: UserCreatedEvent['data'], msg: Message) {
     console.log('User created event recieved', data)
+
     const { id, username, avatar } = data
+
     const user = User.build({ id, username, avatar })
     await user.save()
+
     msg.ack()
   }
 }

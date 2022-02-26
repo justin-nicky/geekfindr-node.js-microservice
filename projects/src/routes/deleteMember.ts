@@ -7,7 +7,6 @@ import {
 } from '@geekfindr/common'
 import { param } from 'express-validator'
 
-import { Project } from '../models/project'
 import { User } from '../models/user'
 import { protectProject } from '../middlewares/protectProject'
 import { hasHigerRank } from '../helpers/compareRanks'
@@ -32,6 +31,7 @@ router.delete(
     if (!user) {
       throw new BadRequestError('User not found')
     }
+
     // getting the current user
     const currentUser = project?.team?.find((member) => {
       return member.user.toString() === req.user!.id
@@ -42,6 +42,7 @@ router.delete(
     if (!otherUser) {
       throw new BadRequestError('Member not found')
     }
+
     // checking if the current user has a higher rank than the other user
     // and if both the uesrs are same(leave project functionality)
     if (
@@ -57,6 +58,7 @@ router.delete(
     } else {
       throw new ForbiddenOperationError()
     }
+
     await Promise.all([project.save(), user.save()])
     res.json({})
   }

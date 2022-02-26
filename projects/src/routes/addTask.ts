@@ -6,8 +6,9 @@ import {
 } from '@geekfindr/common'
 import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
-import { protectProject } from '../middlewares/protectProject'
 import mongoose from 'mongoose'
+
+import { protectProject } from '../middlewares/protectProject'
 import { hasHigerRank } from '../helpers/compareRanks'
 import { MemberTypes } from '../models/memberTypes'
 
@@ -63,6 +64,7 @@ router.post(
       description: string
       users: mongoose.Types.ObjectId[]
     }
+
     // Checking if project already has a task with the same title.
     const hasTaskWithTitle = project.task?.some(
       (_task) => _task.title === title
@@ -70,8 +72,9 @@ router.post(
     if (hasTaskWithTitle) {
       throw new BadRequestError('Task with the same title already exists.')
     }
+
     // Checking if the user has permission to do this operation
-    // ie, if every user in the users array has a higher rank than the current-user.
+    // ie, if every user in the users array has a lower rank than the current-user.
     const teamMemberIds =
       project?.team?.map((teamMember) => teamMember.user) ?? []
     users.every((userId) => {
@@ -87,6 +90,7 @@ router.post(
         throw new ForbiddenOperationError()
       }
     })
+
     project.task?.push({
       title,
       description,
@@ -94,6 +98,7 @@ router.post(
       isComplete: false,
       assignor: new mongoose.Types.ObjectId(user.id),
     })
+
     await project.save()
     res.send({})
   }

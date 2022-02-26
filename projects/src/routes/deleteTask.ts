@@ -6,6 +6,7 @@ import {
   ForbiddenOperationError,
 } from '@geekfindr/common'
 import { param } from 'express-validator'
+
 import { protectProject } from '../middlewares/protectProject'
 
 const router = express.Router()
@@ -30,13 +31,16 @@ router.delete(
     if (!task) {
       throw new BadRequestError('Task not found.')
     }
+
     const isOwner = project.owner.toString() === user.id
     const isAssignor = task.assignor.toString() === user.id
     if (!isOwner || !isAssignor) {
       throw new ForbiddenOperationError()
     }
+
     project.task = project.task?.filter((_task) => _task.title !== taskTitle)
     await project.save()
+
     res.send({})
   }
 )

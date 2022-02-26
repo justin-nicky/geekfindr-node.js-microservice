@@ -153,6 +153,7 @@ projectSchema.statics.build = (attrs: ProjectAttrs) => {
   delete attrs.id
   return new Project({ ...attrs, _id })
 }
+
 const Project = mongoose.model<ProjectDoc, ProjectModel>(
   'Project',
   projectSchema

@@ -26,6 +26,7 @@ router.get(
         },
       },
     ])
+
     res.json(projectNames[0]?.projectNames ?? [])
   }
 )

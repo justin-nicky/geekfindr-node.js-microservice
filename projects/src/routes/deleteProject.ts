@@ -5,6 +5,7 @@ import {
   validateRequest,
 } from '@geekfindr/common'
 import { param } from 'express-validator'
+
 import { protectProject } from '../middlewares/protectProject'
 import { ProjectDeletedPublisher } from '../events/publishers/projectDeletedPublisher'
 import { natsWrapper } from '../natsWrapper'
@@ -23,15 +24,19 @@ router.delete(
   protectProject,
   async (req: Request, res: Response) => {
     const project = req.project
+
     if (project.owner.toString() !== req.user.id) {
       throw new ForbiddenOperationError()
     }
+
     project.isDeleted = true
     await project.save()
+
     // Publish project-deleted event
     new ProjectDeletedPublisher(natsWrapper.client).publish({
       id: project.id,
     })
+
     res.send({})
   }
 )

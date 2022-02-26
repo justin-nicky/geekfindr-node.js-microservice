@@ -20,6 +20,7 @@ export const protectProject = async (
   const userQuery = User.findById(req.user!.id)
   const projectQuery = Project.findById(req.params.projectId)
   const [user, project] = await Promise.all([userQuery, projectQuery])
+
   if (!project || project.isDeleted) {
     throw new BadRequestError('Project not found')
   }
@@ -28,6 +29,7 @@ export const protectProject = async (
     (_project) =>
       _project.project.toString() === req.params.projectId.toString()
   )
+
   if (!isUserAMember) {
     throw new ForbiddenOperationError()
   }
