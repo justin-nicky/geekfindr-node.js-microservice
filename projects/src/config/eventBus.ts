@@ -10,6 +10,7 @@ export const connectEventBus = async () => {
       process.env.NATS_CLIENT_ID!,
       'http://nats-srv:4222'
     )
+
     new UserCreatedListener(natsWrapper.client).listen()
     new ProjectCreatedListener(natsWrapper.client).listen()
     new ProjectJoinRequestListener(natsWrapper.client).listen()

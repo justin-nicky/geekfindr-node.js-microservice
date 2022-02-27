@@ -74,6 +74,7 @@ userSchema.statics.build = (attrs: UserAttrs) => {
   delete attrs.id
   return new User({ ...attrs, _id })
 }
+
 const User = mongoose.model<UserDoc, UserModel>('User', userSchema)
 
 export { User }

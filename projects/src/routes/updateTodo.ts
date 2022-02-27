@@ -51,8 +51,10 @@ router.put(
   protectProject,
   async (req: Request, res: Response) => {
     const project = req.project
+
     project.todo = req.body.todo
     await project.save()
+
     res.send({})
   }
 )

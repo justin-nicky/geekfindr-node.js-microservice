@@ -6,8 +6,9 @@ import {
   ForbiddenOperationError,
 } from '@geekfindr/common'
 import { param, body } from 'express-validator'
-import { protectProject } from '../middlewares/protectProject'
 import mongoose from 'mongoose'
+
+import { protectProject } from '../middlewares/protectProject'
 
 const router = express.Router()
 
@@ -38,11 +39,14 @@ router.put(
     if (!task) {
       throw new BadRequestError('Task not found.')
     }
+
     if (!task.users.includes(user.id as unknown as mongoose.Types.ObjectId)) {
       throw new ForbiddenOperationError()
     }
+
     task.isComplete = isComplete
     await project.save()
+
     res.send({})
   }
 )

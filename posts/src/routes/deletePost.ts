@@ -25,9 +25,15 @@ router.delete(
     const post = await Post.findOne({
       owner: req.user.id,
       _id: id,
+      isDeleted: false,
     })
     if (!post) {
       throw new BadRequestError('Post does not exist.')
+    }
+    if (post.isProject) {
+      throw new BadRequestError(
+        'Can not delete a post associated with a project.'
+      )
     }
     post.isDeleted = true
     await post.save()

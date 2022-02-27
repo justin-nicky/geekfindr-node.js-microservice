@@ -12,11 +12,13 @@ export class ProjectCreatedListener extends Listener<ProjectCreatedEvent> {
 
   async onMessage(data: ProjectCreatedEvent['data'], msg: Message) {
     console.log('Project created event recieved', data)
+
     const { id, name, owner } = data as unknown as {
       id: mongoose.Types.ObjectId
       name: string
       owner: mongoose.Types.ObjectId
     }
+
     const project = Project.build({
       id,
       name,
@@ -24,9 +26,11 @@ export class ProjectCreatedListener extends Listener<ProjectCreatedEvent> {
       team: [{ user: owner, role: MemberTypes.Owner }],
     })
     await project.save()
+
     const user = await User.findById(owner)
     user?.projects.push({ project: id, role: MemberTypes.Owner })
     await user?.save()
+
     msg.ack()
   }
 }
