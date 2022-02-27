@@ -42,7 +42,11 @@ router.get(
       throw new BadRequestError('Project not found')
     }
 
-    res.send(project)
+    const member = project.team?.find(
+      (_member) => _member.user.id.toString() === req.user!.id
+    )
+
+    res.json({ project, role: member?.role })
   }
 )
 
