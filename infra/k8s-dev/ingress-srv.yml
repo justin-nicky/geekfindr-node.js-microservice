@@ -53,3 +53,10 @@ spec:
                 name: chats-srv
                 port:
                   number: 3000
+          - path: /?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: chats-srv
+                port:
+                  number: 3000
