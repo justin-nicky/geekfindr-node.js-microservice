@@ -22,7 +22,6 @@ const io = new Server(server, {
 
 //protecting the websocket connection
 
-
 io.on('connection', (socket) => {
   console.log(`New client connected: ${socket.id}`)
   socket.on('disconnect', () => {

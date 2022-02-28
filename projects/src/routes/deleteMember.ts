@@ -45,9 +45,11 @@ router.delete(
 
     // checking if the current user has a higher rank than the other user
     // and if both the uesrs are same(leave project functionality)
+    // Note: owner can't leave the project.
     if (
       hasHigerRank(currentUser!.role, otherUser.role) ||
-      req.params.memberId === req.user!.id
+      (req.params.memberId === req.user!.id &&
+        req.user!.id !== project.owner.toString())
     ) {
       project.team = project?.team?.filter(
         (member) => member.user.toString() !== req.params.memberId
