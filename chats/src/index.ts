@@ -1,7 +1,7 @@
 import express, { urlencoded, json } from 'express'
 import 'express-async-errors'
 import cors from 'cors'
-import { errorHandler, NotFoundError } from '@geekfindr/common'
+import { errorHandler, NotFoundError, protectRoute } from '@geekfindr/common'
 import morgan from 'morgan'
 import http from 'http'
 import { Server } from 'socket.io'
@@ -13,12 +13,14 @@ import { natsWrapper } from './natsWrapper'
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
-  //path: '/api/v1/chats',
+  path: '/api/v1/chats',
   cors: {
     origin: '*',
     methods: 'GET,PUT,PATCH,POST,DELETE',
   },
 })
+
+//protecting the websocket connection
 
 io.on('connection', (socket) => {
   console.log(`New client connected: ${socket.id}`)

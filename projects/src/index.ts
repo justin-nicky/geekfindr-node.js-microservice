@@ -7,6 +7,7 @@ import morgan from 'morgan'
 import { connectDB } from './config/db'
 import { connectEventBus } from './config/eventBus'
 import { natsWrapper } from './natsWrapper'
+
 import { getMyProjectsRouter } from './routes/getMyProjects'
 import { updateDescriptionRouter } from './routes/updateDescription'
 import { getProjectNamesRouter } from './routes/getProjectNames'
@@ -35,8 +36,8 @@ app.use(deleteMemberRouter)
 app.use(deleteProjectRouter)
 app.use(deleteTaskRouter)
 app.use(getMyProjectsRouter)
-app.use(getProjectRouter)
 app.use(getProjectNamesRouter)
+app.use(getProjectRouter)
 app.use(markTaskAsCompletedRouter)
 app.use(updateDescriptionRouter)
 app.use(updateMemberRouter)
