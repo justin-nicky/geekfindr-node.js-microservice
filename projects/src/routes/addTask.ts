@@ -75,15 +75,17 @@ router.post(
 
     // Checking if the user has permission to do this operation
     // ie, if every user in the users array has a lower rank than the current-user.
+    const currentUserRole = project?.team?.find(
+      (teamMember) => teamMember.user.toString() === user.id
+    )?.role as MemberTypes
+
     const teamMemberIds =
-      project?.team?.map((teamMember) => teamMember.user) ?? []
+      project?.team?.map((teamMember) => teamMember.user.toString()) ?? []
+
     users.every((userId) => {
-      let isUserInTeam = teamMemberIds.includes(userId)
-      let currentUserRole = project?.team?.find(
-        (teamMember) => teamMember.user === new mongoose.Types.ObjectId(user.id)
-      )?.role as MemberTypes
+      let isUserInTeam = teamMemberIds.includes(userId.toString())
       let otherUserRole = project?.team?.find(
-        (teamMember) => teamMember.user === userId
+        (teamMember) => teamMember.user.toString() === userId.toString()
       )?.role as MemberTypes
 
       if (!isUserInTeam || hasHigerRank(otherUserRole, currentUserRole)) {
