@@ -13,6 +13,7 @@ interface Task {
   users: mongoose.Types.ObjectId[]
   isComplete: boolean
   assignor: mongoose.Types.ObjectId
+  type?: string
 }
 
 interface Todo {
@@ -99,6 +100,10 @@ const taskSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
+  },
+  type: {
+    type: String,
+    required: false,
   },
 })
 
