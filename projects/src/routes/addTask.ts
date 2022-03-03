@@ -29,6 +29,7 @@ const requestBodyValidatorMiddlewares = [
     .bail()
     .isString()
     .withMessage('Description must be a string'),
+  body('type').optional().isString().withMessage('Type must be a string'),
   body('users')
     .notEmpty()
     .withMessage('Users is required')
@@ -59,22 +60,23 @@ router.post(
   async (req: Request, res: Response) => {
     const user = req.user
     const project = req.project
-    const { title, description, users } = req.body as {
+    const { title, description, users, type } = req.body as {
       title: string
       description: string
       users: mongoose.Types.ObjectId[]
+      type: string | undefined
     }
 
     // Checking if project already has a task with the same title.
-    const hasTaskWithTitle = project.task?.some(
+    const hasTaskWithSameTitle = project.task?.some(
       (_task) => _task.title === title
     )
-    if (hasTaskWithTitle) {
+    if (hasTaskWithSameTitle) {
       throw new BadRequestError('Task with the same title already exists.')
     }
 
     // Checking if the user has permission to do this operation
-    // ie, if every user in the users array has a lower rank than the current-user.
+    // ie, if every assignees has a lower rank than the assignor.
     const currentUserRole = project?.team?.find(
       (teamMember) => teamMember.user.toString() === user.id
     )?.role as MemberTypes
@@ -99,6 +101,7 @@ router.post(
       users,
       isComplete: false,
       assignor: new mongoose.Types.ObjectId(user.id),
+      ...(type && { type }),
     })
 
     await project.save()
