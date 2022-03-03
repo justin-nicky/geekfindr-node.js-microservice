@@ -13,7 +13,7 @@ const router = express.Router()
 
 const requestBodyValiatiorMiddlewares = [
   param('projectId').isMongoId().withMessage('Invalid project id.'),
-  param('task-title').notEmpty().isString().withMessage('Invalid task title.'),
+  param('taskTitle').notEmpty().isString().withMessage('Invalid task title.'),
   validateRequest,
 ]
 

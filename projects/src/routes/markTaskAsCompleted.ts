@@ -20,7 +20,7 @@ const requestBodyValiatiorMiddlewares = [
     .isBoolean()
     .withMessage('Invalid isComplete flag.'),
   param('projectId').isMongoId().withMessage('Invalid project id.'),
-  param('task-title').notEmpty().isString().withMessage('Invalid task title.'),
+  param('taskTitle').notEmpty().isString().withMessage('Invalid task title.'),
   validateRequest,
 ]
 
