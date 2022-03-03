@@ -11,6 +11,7 @@ import mongoose from 'mongoose'
 import { protectProject } from '../middlewares/protectProject'
 import { hasHigerRank } from '../helpers/compareRanks'
 import { MemberTypes } from '../models/memberTypes'
+import { TaskTypes } from '../models/taskTypes'
 
 const router = express.Router()
 
@@ -29,7 +30,11 @@ const requestBodyValidatorMiddlewares = [
     .bail()
     .isString()
     .withMessage('Description must be a string'),
-  body('type').optional().isString().withMessage('Type must be a string'),
+  body('type')
+    .optional()
+    .isString()
+    .withMessage('Type must be a string')
+    .custom((val) => Object.values(TaskTypes).includes(val)),
   body('users')
     .notEmpty()
     .withMessage('Users is required')
@@ -64,7 +69,7 @@ router.post(
       title: string
       description: string
       users: mongoose.Types.ObjectId[]
-      type: string | undefined
+      type: TaskTypes | undefined
     }
 
     // Checking if project already has a task with the same title.

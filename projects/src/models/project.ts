@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 
 import { MemberTypes } from './memberTypes'
+import { TaskTypes } from './taskTypes'
 
 interface Team {
   user: mongoose.Types.ObjectId
@@ -13,7 +14,7 @@ interface Task {
   users: mongoose.Types.ObjectId[]
   isComplete: boolean
   assignor: mongoose.Types.ObjectId
-  type?: string
+  type?: TaskTypes
 }
 
 interface Todo {
@@ -104,6 +105,7 @@ const taskSchema = new mongoose.Schema({
   type: {
     type: String,
     required: false,
+    enum: TaskTypes,
   },
 })
 
