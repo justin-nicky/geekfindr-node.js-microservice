@@ -11,6 +11,8 @@ import { connectEventBus } from './config/eventBus'
 import { natsWrapper } from './natsWrapper'
 import { protectSocket } from './midlewares/protectSocket'
 import { addConversationRouter } from './routes/addConversation'
+import { getMyConversationsRouter } from './routes/getMyConversations'
+import { getMessagesRouter } from './routes/getMessages'
 
 const app = express()
 const server = http.createServer(app)
@@ -39,6 +41,8 @@ app.get('/api/v1/chats', (req, res) => {
 })
 
 app.use(addConversationRouter)
+app.use(getMyConversationsRouter)
+app.use(getMessagesRouter)
 
 app.all('*', () => {
   throw new NotFoundError()
