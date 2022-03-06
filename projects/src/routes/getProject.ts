@@ -35,6 +35,10 @@ router.get(
           path: 'team.user',
           select: 'username avatar',
         },
+        {
+          path: 'task.assignor',
+          select: 'username avatar',
+        },
       ])
       .select('-team._id -task._id -todo._id')
 
