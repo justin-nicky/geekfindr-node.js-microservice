@@ -81,8 +81,8 @@ router.post(
     participantIds.push(new ObjectId(user.id))
 
     const existingConversation = await Conversation.findOne({
-      _id: { $in: participantIds },
       isRoom: false,
+      participants: participantIds,
     })
 
     if (existingConversation) {

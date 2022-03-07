@@ -13,6 +13,10 @@ import { protectSocket } from './midlewares/protectSocket'
 import { addConversationRouter } from './routes/addConversation'
 import { getMyConversationsRouter } from './routes/getMyConversations'
 import { getMessagesRouter } from './routes/getMessages'
+import { addMemberRouter } from './routes/addMember'
+import { getCurrentUser, userJoin, userLeave } from './socket/users'
+import { Conversation } from './models/conversation'
+import { Message } from './models/message'
 
 const app = express()
 const server = http.createServer(app)
@@ -27,7 +31,7 @@ const io = new Server(server, {
   path: '/api/v1/chats/socket.io',
   cors: {
     origin: '*',
-    methods: 'GET,PUT,PATCH,POST,DELETE',
+    methods: 'GET',
   },
   allowEIO3: true,
   serveClient: false,
@@ -36,6 +40,67 @@ const io = new Server(server, {
 // Protecting the websocket connection (verifying the token)
 io.use(protectSocket)
 
+// Socket connection and middlewares
+io.on('connection', (socket) => {
+  console.log(`New client connected: ${socket.id}`)
+  console.log(socket.data)
+
+  socket.on('join_conversation', async ({ conversationId }) => {
+    try {
+      const conversation = await Conversation.findById(conversationId)
+      if (!conversation) {
+        throw new Error('Invalid conversation id')
+      }
+      const isUserAuthorized = conversation.participants.some(
+        (participant) => String(participant) === String(socket.data.user.id)
+      )
+      if (!isUserAuthorized) {
+        throw new Error('User is not authorized to join this conversation')
+      }
+      const user = userJoin(socket.data.user.id, socket.id, conversationId)
+      await socket.join(String(user.room))
+    } catch (error) {
+      console.error(error)
+    }
+  })
+
+  socket.on('message', async ({ message }) => {
+    try {
+      const time = new Date().toISOString()
+      const user = getCurrentUser(socket.id)
+      if (!user) {
+        return
+      }
+      io.to(String(user.room)).emit('message', {
+        message,
+        userId: user.id,
+        time,
+      })
+      let newMessage = await Message.build({
+        senderId: user.id,
+        conversationId: user.room,
+        message,
+      }).save()
+      Conversation.updateOne(
+        { _id: user.room },
+        {
+          $push: {
+            messages: newMessage._id,
+          },
+        }
+      )
+    } catch (error) {
+      console.error(error)
+    }
+  })
+
+  socket.on('disconnect', () => {
+    userLeave(socket.id)
+    console.log(`Client disconnected: ${socket.id}`)
+  })
+})
+
+// REST API Routes
 app.get('/api/v1/chats', (req, res) => {
   res.send('Hello World !!!!!')
 })
@@ -43,19 +108,12 @@ app.get('/api/v1/chats', (req, res) => {
 app.use(addConversationRouter)
 app.use(getMyConversationsRouter)
 app.use(getMessagesRouter)
+app.use(addMemberRouter)
 
 app.all('*', () => {
   throw new NotFoundError()
 })
 app.use(errorHandler)
-
-io.on('connection', (socket) => {
-  console.log(`New client connected: ${socket.id}`)
-
-  socket.on('disconnect', () => {
-    console.log(`Client disconnected: ${socket.id}`)
-  })
-})
 
 const start = async () => {
   if (!process.env.JWT_SECRET) {
