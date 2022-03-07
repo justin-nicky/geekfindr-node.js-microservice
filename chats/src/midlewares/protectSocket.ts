@@ -7,11 +7,15 @@ export interface UserPayload {
   username: string
   avatar?: string
 }
-const protectSocket = (socket: Socket, next: any) => {
+const protectSocket = async (socket: Socket, next: any) => {
   const token = socket.handshake.auth.token
   if (token) {
     try {
-      jwt.verify(token, process.env.JWT_SECRET!) as UserPayload
+      const user = (await jwt.verify(
+        token,
+        process.env.JWT_SECRET!
+      )) as UserPayload
+      socket.data = { ...socket.data, user }
       next()
     } catch (error) {
       console.error(error)
