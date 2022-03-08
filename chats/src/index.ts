@@ -38,7 +38,7 @@ const io = new Server(server, {
 })
 
 // Protecting the websocket connection (verifying the token)
-io.use(protectSocket)
+//io.use(protectSocket)
 
 // Socket connection and middlewares
 io.on('connection', (socket) => {
