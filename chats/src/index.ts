@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
             messages: newMessage._id,
           },
         }
-      )
+      ).exec()
     } catch (error) {
       console.error(error)
     }
