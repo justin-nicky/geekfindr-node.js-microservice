@@ -34,11 +34,10 @@ const io = new Server(server, {
     methods: 'GET',
   },
   allowEIO3: true,
-  serveClient: false,
 })
 
 // Protecting the websocket connection (verifying the token)
-//io.use(protectSocket)
+io.use(protectSocket)
 
 // Socket connection and middlewares
 io.on('connection', (socket) => {
