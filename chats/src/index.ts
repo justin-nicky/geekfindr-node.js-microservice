@@ -46,6 +46,9 @@ io.on('connection', (socket) => {
 
   socket.on('join_conversation', async ({ conversationId }) => {
     try {
+      console.log(
+        `User ${socket.data.user.id} joined conversation ${conversationId}`
+      )
       const conversation = await Conversation.findById(conversationId)
       if (!conversation) {
         throw new Error('Invalid conversation id')
@@ -67,6 +70,9 @@ io.on('connection', (socket) => {
     try {
       const time = new Date().toISOString()
       const user = getCurrentUser(socket.id)
+      console.log(
+        `User ${socket.data.user.id} sent a message to conversation ${user?.room}: ${message}`
+      )
       if (!user) {
         return
       }
