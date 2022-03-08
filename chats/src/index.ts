@@ -86,6 +86,7 @@ io.on('connection', (socket) => {
         conversationId: user.room,
         message,
       }).save()
+      console.log(newMessage)
       Conversation.updateOne(
         { _id: user.room },
         {
