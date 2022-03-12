@@ -95,7 +95,11 @@ router.post(
       ...(isRoom ? { roomName } : {}),
     }).save()
 
-    res.json(conversation)
+    const conversationWithParticipants = await Conversation.findById(
+      conversation?._id
+    ).populate('participants', 'username avatar id')
+
+    res.json(conversationWithParticipants)
   }
 )
 
