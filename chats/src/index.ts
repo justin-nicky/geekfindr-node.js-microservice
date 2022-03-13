@@ -9,6 +9,7 @@ import { Server } from 'socket.io'
 import { connectDB } from './config/db'
 import { connectEventBus } from './config/eventBus'
 import { natsWrapper } from './natsWrapper'
+import { Websocket } from './socket/webSocket'
 import { protectSocket } from './midlewares/protectSocket'
 import { addConversationRouter } from './routes/addConversation'
 import { getMyConversationsRouter } from './routes/getMyConversations'
@@ -17,9 +18,11 @@ import { addMemberRouter } from './routes/addMember'
 import { getCurrentUser, userJoin, userLeave } from './socket/users'
 import { Conversation } from './models/conversation'
 import { Message } from './models/message'
+import { messageHandler } from './socket/eventHandlers/message'
+import { joinConversationHandler } from './socket/eventHandlers/joinConversation'
 
 const app = express()
-const server = http.createServer(app)
+const httpServer = http.createServer(app)
 
 app.use(cors())
 app.set('trust proxy', true)
@@ -27,14 +30,7 @@ app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('tiny'))
 
-const io = new Server(server, {
-  path: '/api/v1/chats/socket.io',
-  cors: {
-    origin: '*',
-    methods: 'GET',
-  },
-  allowEIO3: true,
-})
+const io = Websocket.getInstance(httpServer)
 
 // Protecting the websocket connection (verifying the token)
 io.use(protectSocket)
@@ -42,63 +38,65 @@ io.use(protectSocket)
 // Socket connection and middlewares
 io.on('connection', (socket) => {
   console.log(`New client connected: ${socket.id}`)
-  console.log(socket.data)
 
-  socket.on('join_conversation', async ({ conversationId }) => {
-    try {
-      console.log(
-        `User ${socket.data.user.id} joined conversation ${conversationId}`
-      )
-      const conversation = await Conversation.findById(conversationId)
-      if (!conversation) {
-        throw new Error('Invalid conversation id')
-      }
-      const isUserAuthorized = conversation.participants.some(
-        (participant) => String(participant) === String(socket.data.user.id)
-      )
-      if (!isUserAuthorized) {
-        throw new Error('User is not authorized to join this conversation')
-      }
-      const user = userJoin(socket.data.user.id, socket.id, conversationId)
-      await socket.join(String(user.room))
-    } catch (error) {
-      console.error(error)
-    }
-  })
+  joinConversationHandler(io, socket)
+  messageHandler(io, socket)
 
-  socket.on('message', async ({ message }) => {
-    try {
-      const time = new Date().toISOString()
-      const user = getCurrentUser(socket.id)
-      console.log(
-        `User ${socket.data.user.id} sent a message to conversation ${user?.room}: ${message}`
-      )
-      if (!user) {
-        return
-      }
-      io.to(String(user.room)).emit('message', {
-        message,
-        userId: user.id,
-        time,
-      })
-      let newMessage = await Message.build({
-        senderId: user.id,
-        conversationId: user.room,
-        message,
-      }).save()
-      console.log(newMessage)
-      Conversation.updateOne(
-        { _id: user.room },
-        {
-          $push: {
-            messages: newMessage._id,
-          },
-        }
-      ).exec()
-    } catch (error) {
-      console.error(error)
-    }
-  })
+  // socket.on('join_conversation', async ({ conversationId }) => {
+  //   try {
+  //     console.log(
+  //       `User ${socket.data.user.id} joined conversation ${conversationId}`
+  //     )
+  //     const conversation = await Conversation.findById(conversationId)
+  //     if (!conversation) {
+  //       throw new Error('Invalid conversation id')
+  //     }
+  //     const isUserAuthorized = conversation.participants.some(
+  //       (participant) => String(participant) === String(socket.data.user.id)
+  //     )
+  //     if (!isUserAuthorized) {
+  //       throw new Error('User is not authorized to join this conversation')
+  //     }
+  //     const user = userJoin(socket.data.user.id, socket.id, conversationId)
+  //     await socket.join(String(user.room))
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // })
+
+  // socket.on('message', async ({ message }) => {
+  //   try {
+  //     const time = new Date().toISOString()
+  //     const user = getCurrentUser(socket.id)
+  //     console.log(
+  //       `User ${socket.data.user.id} sent a message to conversation ${user?.room}: ${message}`
+  //     )
+  //     if (!user) {
+  //       return
+  //     }
+  //     io.to(String(user.room)).emit('message', {
+  //       message,
+  //       userId: user.id,
+  //       time,
+  //     })
+  //     let newMessage = await Message.build({
+  //       senderId: user.id,
+  //       conversationId: user.room,
+  //       message,
+  //     }).save()
+  //     console.log(newMessage)
+  //     Conversation.updateOne(
+  //       { _id: user.room },
+  //       {
+  //         $push: {
+  //           messages: newMessage._id,
+  //         },
+  //       }
+  //     ).exec()
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // })
 
   socket.on('disconnect', () => {
     userLeave(socket.id)
@@ -143,7 +141,7 @@ const start = async () => {
   process.on('SIGINT', () => natsWrapper.client.close())
   process.on('SIGTERM', () => natsWrapper.client.close())
 
-  server.listen(3000, () => {
+  httpServer.listen(3000, () => {
     console.log('Chat service listening on port 3000...')
   })
 }
