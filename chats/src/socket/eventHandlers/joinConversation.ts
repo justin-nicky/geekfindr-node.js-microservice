@@ -30,18 +30,6 @@ export const joinConversationHandler = (io: Websocket, socket: Socket) => {
           socket.id,
           new mongoose.Types.ObjectId(conversationId)
         )
-
-        const myRooms = await Conversation.find({
-          participants: {
-            $in: [getCurrentUser(socket?.id)?.id!],
-          },
-        })
-
-        const myRoomIds = myRooms.map((_room) => {
-          return String(_room._id)
-        })
-
-        await socket.join(myRoomIds)
       } catch (error) {
         console.error(error)
       }

@@ -36,8 +36,19 @@ const io = Websocket.getInstance(httpServer)
 io.use(protectSocket)
 
 // Socket connection and middlewares
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   console.log(`New client connected: ${socket.id}`)
+  const myRooms = await Conversation.find({
+    participants: {
+      $in: [socket.data.user.id],
+    },
+  })
+
+  const myRoomIds = myRooms.map((_room) => {
+    return String(_room._id)
+  })
+
+  await socket.join(myRoomIds)
 
   joinConversationHandler(io, socket)
   messageHandler(io, socket)
