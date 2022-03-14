@@ -42,62 +42,6 @@ io.on('connection', (socket) => {
   joinConversationHandler(io, socket)
   messageHandler(io, socket)
 
-  // socket.on('join_conversation', async ({ conversationId }) => {
-  //   try {
-  //     console.log(
-  //       `User ${socket.data.user.id} joined conversation ${conversationId}`
-  //     )
-  //     const conversation = await Conversation.findById(conversationId)
-  //     if (!conversation) {
-  //       throw new Error('Invalid conversation id')
-  //     }
-  //     const isUserAuthorized = conversation.participants.some(
-  //       (participant) => String(participant) === String(socket.data.user.id)
-  //     )
-  //     if (!isUserAuthorized) {
-  //       throw new Error('User is not authorized to join this conversation')
-  //     }
-  //     const user = userJoin(socket.data.user.id, socket.id, conversationId)
-  //     await socket.join(String(user.room))
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // })
-
-  // socket.on('message', async ({ message }) => {
-  //   try {
-  //     const time = new Date().toISOString()
-  //     const user = getCurrentUser(socket.id)
-  //     console.log(
-  //       `User ${socket.data.user.id} sent a message to conversation ${user?.room}: ${message}`
-  //     )
-  //     if (!user) {
-  //       return
-  //     }
-  //     io.to(String(user.room)).emit('message', {
-  //       message,
-  //       userId: user.id,
-  //       time,
-  //     })
-  //     let newMessage = await Message.build({
-  //       senderId: user.id,
-  //       conversationId: user.room,
-  //       message,
-  //     }).save()
-  //     console.log(newMessage)
-  //     Conversation.updateOne(
-  //       { _id: user.room },
-  //       {
-  //         $push: {
-  //           messages: newMessage._id,
-  //         },
-  //       }
-  //     ).exec()
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // })
-
   socket.on('disconnect', () => {
     userLeave(socket.id)
     console.log(`Client disconnected: ${socket.id}`)
