@@ -24,7 +24,6 @@ export interface ConversationDoc extends mongoose.Document {
   messages?: mongoose.Types.ObjectId[]
   isRoom: boolean
   roomName?: string
-  //isProjet: boolean
 }
 
 const conversationSchema = new mongoose.Schema(
@@ -46,11 +45,6 @@ const conversationSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    // isProject: {
-    //   type: Boolean,
-    //   required: true,
-    //   default: false,
-    // },
   },
   {
     toJSON: {
@@ -65,11 +59,6 @@ const conversationSchema = new mongoose.Schema(
 )
 
 conversationSchema.statics.build = (attrs: ConversationAttrs) => {
-  //   if (attrs.id) {
-  //     const _id = attrs.id
-  //     delete attrs.id
-  //     return new Conversation({ ...attrs, _id })
-  //   }
   return new Conversation(attrs)
 }
 const Conversation = mongoose.model<ConversationDoc, ConversationModel>(

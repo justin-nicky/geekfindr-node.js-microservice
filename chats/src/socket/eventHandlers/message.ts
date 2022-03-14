@@ -11,23 +11,22 @@ export const messageHandler = (io: Websocket, socket: Socket) => {
       try {
         const time = new Date().toISOString()
         const user = getCurrentUser(socket.id)
-        console.log(
-          `User ${socket.data.user.id} sent a message to conversation ${user?.room}: ${message}`
-        )
         if (!user) {
           return
         }
+
         io.to(String(user.room)).emit('message', {
           message,
           userId: user.id,
           time,
         })
+
         let newMessage = await Message.build({
           senderId: user.id,
           conversationId: user.room,
           message,
         }).save()
-        console.log(newMessage)
+
         Conversation.updateOne(
           { _id: user.room },
           {
