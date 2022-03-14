@@ -6,7 +6,13 @@ import { Conversation } from '../../models/conversation'
 import { getCurrentUser } from '../users'
 
 export const messageHandler = (io: Websocket, socket: Socket) => {
-  const message = async ({ message }: { message: string }) => {
+  const message = async ({
+    message,
+    conversationId,
+  }: {
+    message: string
+    conversationId: string
+  }) => {
     if (message) {
       try {
         const time = new Date().toISOString()
@@ -15,10 +21,11 @@ export const messageHandler = (io: Websocket, socket: Socket) => {
           return
         }
 
-        io.to(String(user.room)).emit('message', {
+        io.to(conversationId).emit('message', {
           message,
           userId: user.id,
           time,
+          conversationId,
         })
 
         let newMessage = await Message.build({
