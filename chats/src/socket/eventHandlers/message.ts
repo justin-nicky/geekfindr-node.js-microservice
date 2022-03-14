@@ -1,5 +1,6 @@
 import { Websocket } from '../webSocket'
 import { Socket } from 'socket.io'
+import mongoose from 'mongoose'
 
 import { Message } from '../../models/message'
 import { Conversation } from '../../models/conversation'
@@ -13,7 +14,7 @@ export const messageHandler = (io: Websocket, socket: Socket) => {
     message: string
     conversationId: string
   }) => {
-    if (message) {
+    if (message && conversationId) {
       try {
         const time = new Date().toISOString()
         const user = getCurrentUser(socket.id)
@@ -30,12 +31,12 @@ export const messageHandler = (io: Websocket, socket: Socket) => {
 
         let newMessage = await Message.build({
           senderId: user.id,
-          conversationId: user.room,
+          conversationId: new mongoose.Types.ObjectId(conversationId),
           message,
         }).save()
 
         Conversation.updateOne(
-          { _id: user.room },
+          { _id: conversationId },
           {
             $push: {
               messages: newMessage._id,
