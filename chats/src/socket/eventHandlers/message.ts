@@ -39,7 +39,7 @@ export const messageHandler = (io: Websocket, socket: Socket) => {
           { _id: conversationId },
           {
             $push: {
-              messages: newMessage._id,
+              messages: { $each: [newMessage._id], $position: 0 },
             },
           }
         ).exec()

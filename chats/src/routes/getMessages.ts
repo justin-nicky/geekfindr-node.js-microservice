@@ -8,6 +8,7 @@ import {
 import { param } from 'express-validator'
 
 import { Conversation } from '../models/conversation'
+import { Message } from '../models/message'
 
 const router = express.Router()
 
@@ -26,9 +27,16 @@ router.get(
   protectRoute,
   requestValidatorMiddlewares,
   async (req: Request, res: Response) => {
-    const conversation = await Conversation.findById(
-      req.params.conversationId
-    ).populate('messages')
+    const conversationQuery = Conversation.findById(req.params.conversationId)
+    const messagesQuery = Message.find({
+      conversationId: req.params.conversationId,
+    })
+      //.sort({ createdAt: -1 })
+      .limit(50)
+    const [messages, conversation] = await Promise.all([
+      messagesQuery,
+      conversationQuery,
+    ])
 
     if (!conversation) {
       throw new BadRequestError('Invalid conversation id')
@@ -41,7 +49,7 @@ router.get(
       throw new ForbiddenOperationError()
     }
 
-    res.send(conversation.messages)
+    res.send(messages)
   }
 )
 
