@@ -15,7 +15,7 @@ router.get(
       },
     }).populate([
       { path: 'participants', select: 'username avatar' },
-      { path: 'messages', limit: 1 },
+      { path: 'messages', options: { limit: 1 } },
     ])
     //.select('-messages')
 
