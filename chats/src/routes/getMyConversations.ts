@@ -13,9 +13,11 @@ router.get(
       participants: {
         $in: [req.user!.id],
       },
-    })
-      .populate('participants', 'username avatar')
-      .select('-messages')
+    }).populate([
+      { path: 'participants', select: 'username avatar' },
+      { path: 'messages', limit: 1 },
+    ])
+    //.select('-messages')
 
     res.send(conversations)
   }
