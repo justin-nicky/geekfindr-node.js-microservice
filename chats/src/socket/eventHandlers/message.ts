@@ -35,8 +35,9 @@ export const messageHandler = (io: Websocket, socket: Socket) => {
           message,
         }).save()
 
-        newMessage.id = newMessage._id
-        delete newMessage._id
+        let copyOfNewMessage = { ...newMessage, id: newMessage._id }
+        copyOfNewMessage._id = undefined
+        copyOfNewMessage.__v = undefined
 
         Conversation.updateOne(
           { _id: conversationId },
@@ -44,7 +45,7 @@ export const messageHandler = (io: Websocket, socket: Socket) => {
             $push: {
               messages: newMessage._id,
             },
-            $set: { lastMessage: newMessage },
+            $set: { lastMessage: copyOfNewMessage },
           }
         ).exec()
       } catch (error) {
