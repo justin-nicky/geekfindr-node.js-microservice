@@ -30,9 +30,8 @@ router.get(
     const conversationQuery = Conversation.findById(req.params.conversationId)
     const messagesQuery = Message.find({
       conversationId: req.params.conversationId,
-    })
-      //.sort({ createdAt: -1 })
-      .limit(50)
+    }).limit(50)
+
     const [messages, conversation] = await Promise.all([
       messagesQuery,
       conversationQuery,
