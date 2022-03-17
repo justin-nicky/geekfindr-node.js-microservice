@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 
+import { MessageDoc } from './message'
+
 // An interface that describes the properties
 // that are requried to create a new Conversation
 interface ConversationAttrs {
@@ -7,8 +9,7 @@ interface ConversationAttrs {
   messages?: mongoose.Types.ObjectId[]
   isRoom: boolean
   roomName?: string
-  //isProjet: boolean
-  //id?: mongoose.Types.ObjectId
+  lastMessage?: MessageDoc
 }
 
 // An interface that describes the properties
@@ -24,6 +25,7 @@ export interface ConversationDoc extends mongoose.Document {
   messages?: mongoose.Types.ObjectId[]
   isRoom: boolean
   roomName?: string
+  lastMessage?: MessageDoc
 }
 
 const conversationSchema = new mongoose.Schema(
@@ -45,6 +47,10 @@ const conversationSchema = new mongoose.Schema(
     roomName: {
       type: String,
       required: false,
+    },
+    lastMessage: {
+      type: Object,
+      default: {},
     },
   },
   {

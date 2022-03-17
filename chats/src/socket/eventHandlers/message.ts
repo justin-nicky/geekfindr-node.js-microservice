@@ -35,12 +35,16 @@ export const messageHandler = (io: Websocket, socket: Socket) => {
           message,
         }).save()
 
+        newMessage.id = newMessage._id
+        delete newMessage._id
+
         Conversation.updateOne(
           { _id: conversationId },
           {
             $push: {
-              messages: { $each: [newMessage._id], $position: 0 },
+              messages: newMessage._id,
             },
+            $set: { lastMessage: newMessage },
           }
         ).exec()
       } catch (error) {
